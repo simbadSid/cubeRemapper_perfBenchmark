@@ -2,6 +2,7 @@
 .pydevproject
 .Rhistory
 bench_run
+jube-parse.log
 srcPlot/*.pyc
 srcPlot/*/.pyc
 resource/statistic

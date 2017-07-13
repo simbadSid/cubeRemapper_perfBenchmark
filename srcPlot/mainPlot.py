@@ -16,6 +16,13 @@
 
 
 
+
+
+
+
+
+
+
 import matplotlib as mpl
 PLOT_LIB_LIST = ['TkAgg', 'GtkAgg', 'Agg']
 for lib in PLOT_LIB_LIST:
@@ -255,11 +262,13 @@ def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, l
 
     legend = legend + " (" + legendExtra + ")"
     ax.plot(X, Z, "-"+pointType, color=col, label=legend, markersize =7)
+
     if (Z_error != None):
         alpha_fill= 0.1
         col = generateMappedRandomColor()
-        ax.fill_between(X, Z_error[1], Z_error[0], color=col, alpha=alpha_fill)
-        
+        if (legendExtra == 'Compute time'):
+            ax.fill_between(X, Z_error[1], Z_error[0], color=col, alpha=alpha_fill)
+
     ax.set_ylabel(Z_label)
     ax.set_xlabel(X_label)
     if (logX):
