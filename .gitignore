@@ -1,4 +1,8 @@
-bench_run
 .project
 .pydevproject
 .Rhistory
+bench_run
+srcPlot/*.pyc
+srcPlot/*/.pyc
+resource/statistic
+resource/cubeInput
