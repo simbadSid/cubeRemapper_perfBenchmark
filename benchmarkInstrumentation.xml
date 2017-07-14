@@ -6,7 +6,7 @@
 		<!-- TODO REMOVE WHEN FILE SUBSTITUTION WILL BE IMPLEMENTED -->
 		<parameter	name="HACK_PATH">							../../../../							</parameter>
 		<!-- TODO END REMOVE WHEN FILE SUBSTITUTION WILL BE IMPLEMENTED -->
-		<parameter	name="branch">								DEV-SL-AIO, DEV-SL-trunk				</parameter>
+		<parameter	name="branch">								DEV-SL-AIO,DEV-SL-trunk					</parameter>
 		<parameter	name="fileExec">							cube_remap2								</parameter>
 		<parameter	name="filePathStatistic">					resource/statistic/						</parameter>
 		<parameter	name="filePathExec">						../${branch}/_build/_install/bin/		</parameter>
@@ -53,7 +53,7 @@
 			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
 			<do>echo "#Result dim:"								>> $HACK_PATH${benchmarkResultFile}	</do>
 			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
-			<do>echo "Total time,Compute time,Compute time is row wise,Write time"		>> $HACK_PATH${benchmarkResultFile}	</do>
+			<do>echo "Total time,Compute time,Compute time is row wise,Compute time[get_sevs_raw],Compute time[set_sevs_raw],Write time"		>> $HACK_PATH${benchmarkResultFile}	</do>
 
 			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
 			<do>echo "#Number of tries:"						>> $HACK_PATH${benchmarkResultFile}	</do>

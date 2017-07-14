@@ -73,7 +73,7 @@ COLOR_DEFAULT                       = 'black'
 COLOR_LIST                          = ['green',                'black',                    'red',                               'purple',                               'blue',                                     'red',          'black']
 COLOR_CORRESPONDENCE                = ['./posixGlibcIO_sleep', './posixGlibcAIO_sleep',    './posixGlibcAIO_sleep_noSignal',    './posixGlibcIO_sleep_memoryFootprint', './posixGlibcAIO_sleep_memoryFootprint',    'DEV-SL-trunk', 'DEV-SL-AIO']
 POINT_TYPE_LIST                     = ['p',             'x',            'o',        '<', '^', '*', 'D', 'x', '|', 'H']
-POINT_TYPE_CORRESPONDENCE           = ['Total time',    'Compute time', 'Write time']
+POINT_TYPE_CORRESPONDENCE           = ['Total time',    'Compute time', 'Compute time is row wise', 'Compute time[get_sevs_raw]', 'Compute time[set_sevs_raw]', 'Write time']
 
 RESULT_DIM_TEXT_DEFAULT             = "Time (s)"
 BAR_SIZE                            = 3
