@@ -266,8 +266,8 @@ def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, l
     if (Z_error != None):
         alpha_fill= 0.1
         col = generateMappedRandomColor()
-        if (legendExtra == 'Compute time'):
-            ax.fill_between(X, Z_error[1], Z_error[0], color=col, alpha=alpha_fill)
+#        if (legendExtra == 'Compute time'):
+        ax.fill_between(X, Z_error[1], Z_error[0], color=col, alpha=alpha_fill)
 
     ax.set_ylabel(Z_label)
     ax.set_xlabel(X_label)

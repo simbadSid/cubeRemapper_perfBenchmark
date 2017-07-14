@@ -21,7 +21,9 @@
 		<parameter	name="cube_totalTime_id">					0										</parameter>
 		<parameter	name="cube_computeTime_id">					1										</parameter>
 		<parameter	name="cube_computeTime_isRowWise_id">		2										</parameter>
-		<parameter	name="cube_writeTime_id">					3										</parameter>
+		<parameter	name="cube_computeTime_get_sevs_raw_id">	3										</parameter>
+		<parameter	name="cube_computeTime_set_sevs_raw_id">	4										</parameter>
+		<parameter	name="cube_writeTime_id">					5										</parameter>
 	</parameterset>
 
 	<parameterset	name="parameter_variableDim">
@@ -82,8 +84,8 @@
 						rm -rf  scorep-*;\
 						${HACK_PATH}${filePathExec}/${fileExec} -r ${HACK_PATH}${cubeSpec} -d -o remappedFile.cubex $HACK_PATH/${inputCubeFile}; \
 						rm remappedFile.cubex
-						cube_dump scorep-*/profile.cubex -m time -z incl -c ${cube_totalTime_id} -c ${cube_computeTime_id} -c ${cube_computeTime_isRowWise_id} -c ${cube_writeTime_id} > $HACK_PATH${cubeDumpResFile};\
-						python $HACK_PATH${fileScriptParseCubeDumpRes} $HACK_PATH${cubeDumpResFile} ${cube_totalTime_id} ${cube_computeTime_id} ${cube_computeTime_isRowWise_id} ${cube_writeTime_id} >> $HACK_PATH${benchmarkResultFile};\
+						cube_dump scorep-*/profile.cubex -m time -z incl -c ${cube_totalTime_id} -c ${cube_computeTime_id} -c ${cube_computeTime_isRowWise_id} -c ${cube_computeTime_get_sevs_raw_id} -c ${cube_computeTime_set_sevs_raw_id} -c ${cube_writeTime_id} > $HACK_PATH${cubeDumpResFile};\
+						python $HACK_PATH${fileScriptParseCubeDumpRes} $HACK_PATH${cubeDumpResFile} ${cube_totalTime_id} ${cube_computeTime_id} ${cube_computeTime_isRowWise_id} ${cube_computeTime_get_sevs_raw_id} ${cube_computeTime_set_sevs_raw_id} ${cube_writeTime_id} >> $HACK_PATH${benchmarkResultFile};\
 						rm $HACK_PATH${cubeDumpResFile};
 					done;
 			</do>
