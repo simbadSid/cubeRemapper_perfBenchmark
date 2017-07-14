@@ -83,7 +83,7 @@
 						${HACK_PATH}${filePathExec}/${fileExec} -r ${HACK_PATH}${cubeSpec} -d -o remappedFile.cubex $HACK_PATH/${inputCubeFile}; \
 						rm remappedFile.cubex
 						cube_dump scorep-*/profile.cubex -m time -z incl -c ${cube_totalTime_id} -c ${cube_computeTime_id} -c ${cube_computeTime_isRowWise_id} -c ${cube_writeTime_id} > $HACK_PATH${cubeDumpResFile};\
-						python $HACK_PATH${fileScriptParseCubeDumpRes} $HACK_PATH${cubeDumpResFile} ${cube_totalTime_id} ${cube_computeTime_id} ${cube_writeTime_id} >> $HACK_PATH${benchmarkResultFile};\
+						python $HACK_PATH${fileScriptParseCubeDumpRes} $HACK_PATH${cubeDumpResFile} ${cube_totalTime_id} ${cube_computeTime_id} ${cube_computeTime_isRowWise_id} ${cube_writeTime_id} >> $HACK_PATH${benchmarkResultFile};\
 						rm $HACK_PATH${cubeDumpResFile};
 					done;
 			</do>
