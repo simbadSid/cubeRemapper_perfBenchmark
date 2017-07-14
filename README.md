@@ -1,6 +1,6 @@
 # Performance assessment of the cube Remapper
 This project allows to assess the performance of the [Cube](http://www.scalasca.org/software/cube-4.x/download.html) plugin: "remapper".</br>
-We mainly compare the deployed implementation (refered to as [trunk](https://svn.version.fz-juelich.de/scalasca_soft/Cube2.0/CubeLib/trunk) with our custom one (refered to as [AIO](https://svn.version.fz-juelich.de/scalasca_soft/Cube2.0/CubeLib/branches/DEV-SL-AIO). </br>
+We mainly compare the deployed implementation (refered to as [trunk](https://svn.version.fz-juelich.de/scalasca_soft/Cube2.0/CubeLib/trunk)) with our custom one (refered to as [AIO](https://svn.version.fz-juelich.de/scalasca_soft/Cube2.0/CubeLib/branches/DEV-SL-AIO)). </br>
 
 ## Prerequisite
 Before installing or running any of the cited projects, one must insure that the following tools are installed:
