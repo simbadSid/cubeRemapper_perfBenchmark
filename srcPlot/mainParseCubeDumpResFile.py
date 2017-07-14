@@ -106,8 +106,8 @@ def parseCubeDumpFile(cubeDumpFileName, idList):
     except:
         loggerError(msg="Failed to open the cube_dump result file", param=cubeDumpFileName, exitNow=True)
     while(not isEndOfFile(cubeDumpFile)):
-        line            = nextMeaningfullLine(cubeDumpFile, raiseExceptionIfNon=False)
-        (idD, value)     = findKeyValue(line, idList)
+        line        = nextMeaningfullLine(cubeDumpFile, raiseExceptionIfNon=False)
+        (idD, value)= findKeyValue(line, idList)
         if (value != None):
             res.append((idD, value))
 
