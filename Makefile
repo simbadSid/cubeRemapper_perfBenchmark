@@ -28,9 +28,14 @@
 ## -------------------------------
 ## Global variables
 ## -------------------------------
-PATH_TRUNK	= ../DEV-SL-trunk
-PATH_AIO	= ../DEV-SL-AIO
-NB_CORES	= 22
+CC						= g++ -std=c++11
+CFLAGS_UNIX				= -Wall -g -Werror -lrt -pthread
+SRC_DIR_PTHREAD_WRAPPER	= srcPthreadWrapper/
+BIN_DIR					= bin/
+
+PATH_TRUNK		= ../DEV-SL-trunk
+PATH_AIO		= ../DEV-SL-AIO
+NB_CORES		= 22
 CUBE_INPUT_SIZE	= 2048
 CUBE_INPUT_FILE	= ../remapperInputDataFile/work/jzam11/jzam1166/measuruments/NPB/NPB3.3-MZ-MPI_scorep-1.2/measurements/E/$(CUBE_INPUT_SIZE)/scorep_sp-mz_E_$(CUBE_INPUT_SIZE)x64_sum_filt/profile.cubex 
 
@@ -158,24 +163,40 @@ preCommitAio:
 
 
 #-----------------------------------------------------------------------------------------------------------
-#---------------------------------------- General Methodes -------------------------------------------------
+#---------------------------------------- Pthread Wrapper Methods -------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------
-.PHONY:			cleanJube runAllBenchmark
+pthreadWrapper.so:
+			$(CC) -fPIC -c -o $(BIN_DIR)pthreadProxy.o		$(SRC_DIR_PTHREAD_WRAPPER)pthreadProxy.cc	-Wall -g -Werror  -pthread;\
+			$(CC) -fPIC -c -o $(BIN_DIR)pthreadWrapper.o	$(SRC_DIR_PTHREAD_WRAPPER)pthreadWrapper.cc	-Wall -g -Werror -DNB_CPU=$(NB_CORES);\
+			$(CC) -shared -Wl,-soname,$@ $(BIN_DIR)pthreadWrapper.o $(BIN_DIR)pthreadProxy.o -o $(BIN_DIR)$@
 
 
-cleanJube:
-	rm -rf bench_run jube-parse.log
-
-
+#-----------------------------------------------------------------------------------------------------------
+#---------------------------------------- Experimentation Methodes -----------------------------------------
+#-----------------------------------------------------------------------------------------------------------
 runAllBenchmark:
-	jube run benchmarkInstrumentation.xml --only-bench init_outputFile; \
-	jube run benchmarkInstrumentation.xml --only-bench run_benchmark;
+			jube run benchmarkInstrumentation.xml --only-bench init_outputFile; \
+			jube run benchmarkInstrumentation.xml --only-bench run_benchmark;
 
 
 plotPointCompare:
-	jube run benchmarkInstrumentation.xml --only-bench plotPointCompare
+			jube run benchmarkInstrumentation.xml --only-bench plotPointCompare
 
 
 plotPoint:
-	jube run benchmarkInstrumentation.xml --only-bench plotPoint
+			jube run benchmarkInstrumentation.xml --only-bench plotPoint
+
+
+
+#-----------------------------------------------------------------------------------------------------------
+#---------------------------------------- General Methodes -------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------
+.PHONY:		cleanJube 
+
+
+cleanJube:
+			rm -rf bench_run jube-parse.log
+
+clean:
+			rm $(BIN_DIR)*
 

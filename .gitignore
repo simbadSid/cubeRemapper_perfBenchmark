@@ -7,3 +7,4 @@ srcPlot/*.pyc
 srcPlot/*/.pyc
 resource/statistic/*
 resource/cubeInput
+bin/*

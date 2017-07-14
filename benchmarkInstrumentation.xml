@@ -24,6 +24,7 @@
 		<parameter	name="cube_computeTime_get_sevs_raw_id">	3										</parameter>
 		<parameter	name="cube_computeTime_set_sevs_raw_id">	4										</parameter>
 		<parameter	name="cube_writeTime_id">					5										</parameter>
+		<parameter	name="pthreadWrapperCommand" type="str">	export LD_PRELOAD=bin/pthreadWrapper.so	</parameter>
 	</parameterset>
 
 	<parameterset	name="parameter_variableDim">
@@ -81,9 +82,10 @@
 			<do>	echo ${inputCubeFileSize}", "${nbIoDevice} >> $HACK_PATH${benchmarkResultFile} </do>
 			<do>	for i in `seq 1 $nbTry`;
         			do
-						rm -rf  scorep-*;\
+						rm -rf  scorep-*; \
+						${pthreadWrapperCommand}; \
 						${HACK_PATH}${filePathExec}/${fileExec} -r ${HACK_PATH}${cubeSpec} -d -o remappedFile.cubex $HACK_PATH/${inputCubeFile}; \
-						rm remappedFile.cubex
+						rm remappedFile.cubex; \
 						cube_dump scorep-*/profile.cubex -m time -z incl -c ${cube_totalTime_id} -c ${cube_computeTime_id} -c ${cube_computeTime_isRowWise_id} -c ${cube_computeTime_get_sevs_raw_id} -c ${cube_computeTime_set_sevs_raw_id} -c ${cube_writeTime_id} > $HACK_PATH${cubeDumpResFile};\
 						python $HACK_PATH${fileScriptParseCubeDumpRes} $HACK_PATH${cubeDumpResFile} ${cube_totalTime_id} ${cube_computeTime_id} ${cube_computeTime_isRowWise_id} ${cube_computeTime_get_sevs_raw_id} ${cube_computeTime_set_sevs_raw_id} ${cube_writeTime_id} >> $HACK_PATH${benchmarkResultFile};\
 						rm $HACK_PATH${cubeDumpResFile};
