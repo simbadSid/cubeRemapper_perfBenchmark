@@ -16,12 +16,11 @@
 		<parameter	name="fileScriptPlot">						srcPlot/mainPlot.py						</parameter>
 		<parameter	name="fileScriptParseCubeDumpRes">			srcPlot/mainParseCubeDumpResFile.py		</parameter>
 		<parameter	name="nbProcessor">							2										</parameter>
-		<parameter	name="nbTry">								4										</parameter>
+		<parameter	name="nbTry">								6										</parameter>
 		<parameter	name="benchmarkResultFile" >				${filePathStatistic}/${branch}.data		</parameter>
 		<parameter	name="cube_totalTime_id">					0										</parameter>
 		<parameter	name="cube_computeTime_id">					1										</parameter>
-		<parameter	name="cube_computeTime_get_sevs_raw_id">	2										</parameter>
-		<parameter	name="cube_writeTime_id">					3										</parameter>
+		<parameter	name="cube_writeTime_id">					2										</parameter>
 		<parameter	name="pthreadWrapperCommand" type="str">	export LD_PRELOAD=${HACK_PATH}bin/pthreadWrapper.so	</parameter>
 	</parameterset>
 
@@ -52,7 +51,7 @@
 			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
 			<do>echo "#Result dim:"								>> $HACK_PATH${benchmarkResultFile}	</do>
 			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
-			<do>echo "Total time,Compute time,Compute time[get_sevs_raw],Write time"		>> $HACK_PATH${benchmarkResultFile}	</do>
+			<do>echo "Total time,Compute time,Write time"		>> $HACK_PATH${benchmarkResultFile}	</do>
 
 			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
 			<do>echo "#Number of tries:"						>> $HACK_PATH${benchmarkResultFile}	</do>
@@ -83,8 +82,8 @@
 						${pthreadWrapperCommand}; \
 						${HACK_PATH}${filePathExec}/${fileExec} -r ${HACK_PATH}${cubeSpec} -d -o remappedFile.cubex $HACK_PATH/${inputCubeFile}; \
 						rm remappedFile.cubex; \
-						cube_dump scorep-*/profile.cubex -m time -z incl -c ${cube_totalTime_id} -c ${cube_computeTime_id} -c ${cube_computeTime_get_sevs_raw_id} -c ${cube_writeTime_id} > $HACK_PATH${cubeDumpResFile};\
-						python $HACK_PATH${fileScriptParseCubeDumpRes} $HACK_PATH${cubeDumpResFile} ${cube_totalTime_id} ${cube_computeTime_id} ${cube_computeTime_get_sevs_raw_id} ${cube_writeTime_id} >> $HACK_PATH${benchmarkResultFile};\
+						cube_dump scorep-*/profile.cubex -m time -z incl -c ${cube_totalTime_id} -c ${cube_computeTime_id} -c ${cube_writeTime_id} > $HACK_PATH${cubeDumpResFile};\
+						python $HACK_PATH${fileScriptParseCubeDumpRes} $HACK_PATH${cubeDumpResFile} ${cube_totalTime_id} ${cube_computeTime_id} ${cube_writeTime_id} >> $HACK_PATH${benchmarkResultFile};\
 						rm $HACK_PATH${cubeDumpResFile};
 					done;
 			</do>
