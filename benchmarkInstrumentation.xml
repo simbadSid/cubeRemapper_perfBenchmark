@@ -24,7 +24,7 @@
 		<parameter	name="cube_computeTime_get_sevs_raw_id">	3										</parameter>
 		<parameter	name="cube_computeTime_set_sevs_raw_id">	4										</parameter>
 		<parameter	name="cube_writeTime_id">					5										</parameter>
-		<parameter	name="pthreadWrapperCommand" type="str">	export LD_PRELOAD=bin/pthreadWrapper.so	</parameter>
+		<parameter	name="pthreadWrapperCommand" type="str">	export LD_PRELOAD=${HACK_PATH}bin/pthreadWrapper.so	</parameter>
 	</parameterset>
 
 	<parameterset	name="parameter_variableDim">
