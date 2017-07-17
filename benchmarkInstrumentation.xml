@@ -52,7 +52,7 @@
 			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
 			<do>echo "#Result dim:"								>> $HACK_PATH${benchmarkResultFile}	</do>
 			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
-			<do>echo "Total time,Compute time,Compute time is row wise,Compute time[get_sevs_raw],Compute time[set_sevs_raw],Write time"		>> $HACK_PATH${benchmarkResultFile}	</do>
+			<do>echo "Total time,Compute time,Compute time[get_sevs_raw],Write time"		>> $HACK_PATH${benchmarkResultFile}	</do>
 
 			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
 			<do>echo "#Number of tries:"						>> $HACK_PATH${benchmarkResultFile}	</do>
@@ -64,7 +64,6 @@
 			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
 		</step>
 	</benchmark>
-
 
 	<!-- Operation -->
 	<!-- Run the different pattern benchmarks and assess them -->
