@@ -25,13 +25,6 @@
 
 #define DEFAULT_NB_CPU	4
 
-// -----------------------------
-// Global attributes
-// -----------------------------
-static unsigned char	initialized			= 0;
-static unsigned int		nbCpu				= 0;
-static unsigned int		nbThreadCreation	= 0;
-
 
 
 // -----------------------------

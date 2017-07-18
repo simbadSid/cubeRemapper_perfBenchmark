@@ -25,3 +25,6 @@ The performance evaluation might be runed through the command </br>
 Then the results might be ploted through different graphical representations using the command </br>
 >make plotPointCompare </br>
 >make plotPoint </br>
+
+## The custom pthread wrapper
+TODO
