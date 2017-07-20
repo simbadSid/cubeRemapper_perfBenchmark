@@ -4,32 +4,29 @@
 
 	<parameterset	name="parameter">
 		<!-- TODO REMOVE WHEN FILE SUBSTITUTION WILL BE IMPLEMENTED -->
-		<parameter	name="HACK_PATH">							../../../../							</parameter>
+		<parameter	name="HACK_PATH">							../../../../										</parameter>
 		<!-- TODO END REMOVE WHEN FILE SUBSTITUTION WILL BE IMPLEMENTED -->
-		<parameter	name="branch">								DEV-SL-AIO,DEV-SL-trunk					</parameter>
-		<parameter	name="fileExec">							cube_remap2								</parameter>
-		<parameter	name="filePathStatistic">					resource/statistic/						</parameter>
-		<parameter	name="filePathExec">						../${branch}/_build/_install/bin/		</parameter>
-		<parameter	name="filePathCubeInput">					resource/cubeInput/						</parameter>
-		<parameter	name="cubeSpec">							resource/cubeInputSpec/ghost.spec		</parameter>
-		<parameter	name="cubeDumpResFile">						resource/tmpCubeDumpFile				</parameter>
-		<parameter	name="fileScriptPlot">						srcPlot/mainPlot.py						</parameter>
-		<parameter	name="fileScriptParseCubeDumpRes">			srcPlot/mainParseCubeDumpResFile.py		</parameter>
-		<parameter	name="nbProcessor">							2										</parameter>
-		<parameter	name="nbTry">								6										</parameter>
-		<parameter	name="benchmarkResultFile" >				${filePathStatistic}/${branch}.data		</parameter>
-		<parameter	name="pthreadWrapperCommand" type="str">	export LD_PRELOAD=${HACK_PATH}bin/pthreadWrapper.so	</parameter>
+		<parameter	name="branch">								DEV-SL-AIO, DEV-SL-trunk							</parameter>
+		<parameter	name="fileExec">							cube_remap2											</parameter>
+		<parameter	name="filePathStatistic">					resource/statistic/									</parameter>
+		<parameter	name="filePathExec">						../${branch}/_build/_install/bin/					</parameter>
+		<parameter	name="filePathCubeInput">					resource/cubeInput/									</parameter>
+		<parameter	name="cubeSpec">							resource/cubeInputSpec/ghost.spec					</parameter>
+		<parameter	name="cubeDumpResFile">						resource/tmpCubeDumpFile							</parameter>
+		<parameter	name="fileScriptPlot">						srcPlot/mainPlot.py									</parameter>
+		<parameter	name="fileScriptParseCubeDumpRes">			srcPlot/mainParseCubeDumpResFile.py					</parameter>
+		<parameter	name="nbProcessor">							2													</parameter>
+		<parameter	name="nbTry">								2													</parameter>
 	</parameterset>
 	<parameterset	name="parameterMeasuredDim">
-		<parameter	name="cube_metric" type="str">				"PAPI_L1_TCM"									</parameter>
-		<parameter	name="resultDim" type=str>					"Total ${cube_metric},Compute ${cube_metric},Write ${cube_metric}"	</parameter>
-		<parameter	name="cube_totalMetric_id">					0										</parameter>
-		<parameter	name="cube_computeMetric_id">				1										</parameter>
-		<parameter	name="cube_writeMetric_id">					2										</parameter>
+		<parameter	name="cube_totalMetric_id">					0													</parameter>
+		<parameter	name="cube_computeMetric_id">				1													</parameter>
+		<parameter	name="cube_writeMetric_id">					2													</parameter>
+		<parameter	name="papiMetricListTot" type="str">		PAPI_L1_TCM PAPI_L1_DCM time						</parameter>
 	</parameterset>
 
 	<parameterset	name="parameter_variableDim">
-		<parameter	name="nbIoDevice">							1										</parameter>
+		<parameter	name="nbIoDevice">							1													</parameter>
 		<parameter	name="inputCubeFile"		mode="python">	",".join("${filePathCubeInput}/"+file for file in os.listdir("${filePathCubeInput}"))	</parameter>
 	</parameterset>
 
@@ -42,30 +39,32 @@
 		<step name="init_outputFile">
 			<use>parameter</use>
 			<use>parameterMeasuredDim</use>
-			<do>echo											>  $HACK_PATH${benchmarkResultFile}	</do>
- 			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
-			<do>echo "#Benchmark pattern info:"					>> $HACK_PATH${benchmarkResultFile}	</do>
-			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
-			<do>echo ${branch}									>> $HACK_PATH${benchmarkResultFile}	</do>
-
-			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
-			<do>echo "#Variable dim:"							>> $HACK_PATH${benchmarkResultFile}	</do>
-			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
-			<do>echo "fileSize,nbIoDevice"			 			>> $HACK_PATH${benchmarkResultFile}	</do>
-
-			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
-			<do>echo "#Result dim:"								>> $HACK_PATH${benchmarkResultFile}	</do>
-			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
-			<do>echo ${resultDim}								>> $HACK_PATH${benchmarkResultFile}	</do>
-
-			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
-			<do>echo "#Number of tries:"						>> $HACK_PATH${benchmarkResultFile}	</do>
-			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
- 			<do>echo ${nbTry}									>> $HACK_PATH${benchmarkResultFile}	</do>
-
-			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
-			<do>echo "#Data:"									>> $HACK_PATH${benchmarkResultFile}	</do>
-			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
+			<do>cubeMetricList=( ${papiMetricListTot} ); \
+				for cube_metric in "${cubeMetricList[@]}";
+				do
+					mkdir -p $HACK_PATH${filePathStatistic}${cube_metric};\
+					echo											>  $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+	 				echo "################################"			>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+					echo "#Benchmark pattern info:"					>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+					echo "################################"			>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+					echo ${branch}									>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+					echo "################################"			>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+					echo "#Variable dim:"							>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+					echo "################################"			>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+					echo "fileSize,nbIoDevice"			 			>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+					echo "################################"			>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+					echo "#Result dim:"								>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+					echo "################################"			>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+					echo "Total ${cube_metric},Compute ${cube_metric},Write ${cube_metric}"		>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+					echo "################################"			>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+					echo "#Number of tries:"						>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+					echo "################################"			>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+	 				echo ${nbTry}									>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+					echo "################################"			>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+					echo "#Data:"									>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+					echo "################################"			>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+				done;
+			</do>
 		</step>
 	</benchmark>
 
@@ -79,60 +78,37 @@
 			<use>parameterMeasuredDim</use>
 			<use>parameter_variableDim</use>
 			<!-- Execute the benchmark pattern and write the parameters (thanks to logger option m) -->
-			<do>	echo ${inputCubeFile}</do>
-			<do>	export SCOREP_METRIC_PAPI=${cube_metric}</do>
-			<do>	export inputCubeFileSize=`stat --printf="%s" $HACK_PATH${inputCubeFile}`	</do>
-			<do>	echo ${inputCubeFileSize}", "${nbIoDevice} >> $HACK_PATH${benchmarkResultFile} </do>
-			<do>	for i in `seq 1 $nbTry`;
-        			do
-						rm -rf  scorep-*; \
-						${pthreadWrapperCommand}; \
-						${HACK_PATH}${filePathExec}/${fileExec} -r ${HACK_PATH}${cubeSpec} -d -o remappedFile.cubex $HACK_PATH/${inputCubeFile}; \
-						rm remappedFile.cubex; \
-						cube_dump scorep-*/profile.cubex -m ${cube_metric} -z incl -c ${cube_totalMetric_id} -c ${cube_computeMetric_id} -c ${cube_writeMetric_id} > $HACK_PATH${cubeDumpResFile};\
-						python $HACK_PATH${fileScriptParseCubeDumpRes} $HACK_PATH${cubeDumpResFile} ${cube_totalMetric_id} ${cube_computeMetric_id} ${cube_writeMetric_id} >> $HACK_PATH${benchmarkResultFile};\
-						rm $HACK_PATH${cubeDumpResFile};
+			<do>	export SCOREP_METRIC_PAPI=</do>
+			<do>	cubeMetricList=( ${papiMetricListTot} ); \
+					for cube_metric in "${cubeMetricList[@]}";
+					do
+						if [[ $cube_metric == PAPI* ]]; then
+							export SCOREP_METRIC_PAPI=$SCOREP_METRIC_PAPI${cube_metric},
+						fi;\
 					done;
 			</do>
-		</step>
-	</benchmark>
-
-
-	<!-- Operation -->
-	<!-- Plot the results of all the benchmark pattern assessments -->
-	<!-- Needs to be executed after "run_benchmark" -->
-	<benchmark name="plotSurface" outpath="bench_run">
-		<comment>Plot the results of all the benchmark pattern assessments</comment>
-		<!-- Operation -->
-		<step name="plotSurface">
-			<use>parameter						</use>
-			<do> python $HACK_PATH${fileScriptPlot} $HACK_PATH${benchmarkResultFile} -multipleTry -plotType=surface -sortDim=fileSize</do>
-		</step>
-	</benchmark>
-
-
-	<!-- Operation -->
-	<!-- Plot the results of all the benchmark pattern assessments -->
-	<!-- Needs to be executed after "run_benchmark" -->
-	<benchmark name="plotCloud" outpath="bench_run">
-		<comment>Plot the results of all the benchmark pattern assessments</comment>
-		<!-- Operation -->
-		<step name="plotCloud">
-			<use>parameter						</use>
-			<do> python $HACK_PATH${fileScriptPlot} $HACK_PATH${benchmarkResultFile} -multipleTry -plotType=cloud -sortDim=fileSize</do>
-		</step>
-	</benchmark>
-
-
-	<!-- Operation -->
-	<!-- Plot the results of all the benchmark pattern assessments -->
-	<!-- Needs to be executed after "run_benchmark" -->
-	<benchmark name="plotBar" outpath="bench_run">
-		<comment>Plot the results of all the benchmark pattern assessments</comment>
-		<!-- Operation -->
-		<step name="plotBar">
-			<use>parameter							</use>
-			<do> python $HACK_PATH${fileScriptPlot} $HACK_PATH${benchmarkResultFile} -multipleTry -plotType=bar:nbIoDevice:all -sortDim=fileSize</do>
+			<do>	export inputCubeFileSize=`stat --printf="%s" $HACK_PATH${inputCubeFile}`	</do>
+			<do>	cubeMetricList=( ${papiMetricListTot} ); \
+					for cube_metric in "${cubeMetricList[@]}";
+					do
+						echo $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+						echo ${inputCubeFileSize}", "${nbIoDevice} >> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data
+					done;
+			</do>
+			<do>	for i in `seq 1 $nbTry`;
+					do
+						rm -rf  scorep-*; \
+						${HACK_PATH}${filePathExec}/${fileExec} -r ${HACK_PATH}${cubeSpec} -d -o remappedFile.cubex $HACK_PATH/${inputCubeFile}; \
+						rm remappedFile.cubex; \
+						cubeMetricList=( ${papiMetricListTot} ); \
+						for cube_metric in "${cubeMetricList[@]}";
+						do
+							cube_dump scorep-*/profile.cubex -m ${cube_metric} -z incl -c ${cube_totalMetric_id} -c ${cube_computeMetric_id} -c ${cube_writeMetric_id} > $HACK_PATH${cubeDumpResFile};\
+							python $HACK_PATH${fileScriptParseCubeDumpRes} $HACK_PATH${cubeDumpResFile} ${cube_totalMetric_id} ${cube_computeMetric_id} ${cube_writeMetric_id} >> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+							rm $HACK_PATH${cubeDumpResFile};\
+						done;\
+					done;
+			</do>
 		</step>
 	</benchmark>
 
@@ -145,20 +121,13 @@
 		<!-- Operation -->
 		<step name="plotPoint">
 			<use>parameter							</use>
-			<do> python $HACK_PATH${fileScriptPlot} $HACK_PATH${benchmarkResultFile} -multipleTry -plotType=point:nbIoDevice:all -sortDim=fileSize</do>
-		</step>
-	</benchmark>
-
-
-	<!-- Operation -->
-	<!-- Plot the results of all the benchmark pattern assessments -->
-	<!-- Needs to be executed after "run_benchmark" -->
-	<benchmark name="plotBarCompare" outpath="bench_run">
-		<comment>Plot the results of all the benchmark pattern assessments</comment>
-		<!-- Operation -->
-		<step name="plotBarCompare">
-			<use>parameter							</use>
-			<do> python $HACK_PATH${fileScriptPlot} $HACK_PATH${filePathStatistic}/*.data -multipleTry -plotType=bar:nbIoDevice:all -sortDim=fileSize</do>
+			<use>parameterMeasuredDim				</use>
+			<do>cubeMetricList=( ${papiMetricListTot} ); \
+				for cube_metric in "${cubeMetricList[@]}";
+				do
+					python $HACK_PATH${fileScriptPlot} $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data -multipleTry -plotType=point:nbIoDevice:all -sortDim=fileSize
+				done;
+			</do>
 		</step>
 	</benchmark>
 
@@ -171,10 +140,15 @@
 		<!-- Operation -->
 		<step name="plotPointCompare">
 			<use>parameter							</use>
-			<do> python $HACK_PATH${fileScriptPlot} $HACK_PATH${filePathStatistic}/*.data -multipleTry -plotType=point:nbIoDevice:all -sortDim=fileSize</do>
+			<use>parameterMeasuredDim				</use>
+			<do>cubeMetricList=( ${papiMetricListTot} ); \
+				for cube_metric in "${cubeMetricList[@]}";
+				do
+					python $HACK_PATH${fileScriptPlot} $HACK_PATH${filePathStatistic}${cube_metric}/*.data -multipleTry -plotType=point:nbIoDevice:all -sortDim=fileSize -resultDimText=${cube_metric}; \
+				done;
+			</do>
 		</step>
 	</benchmark>
-
 </jube>
 
 

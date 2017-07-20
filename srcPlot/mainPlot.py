@@ -42,7 +42,7 @@ import numpy as np
 import sys
 
 from data import Data
-from util import loggerError, LIST_SEPARATOR, find, generateMappedRandomColor
+from util import loggerError, LIST_SEPARATOR, find, generateMappedRandomColor, findStartWith
 
 
 
@@ -63,7 +63,6 @@ ARGUMENT_MULTIPLE_TRY               = "-multipleTry"
 ARGUMENT_ALL_PROJECTION_IN_1_FRAME  = "-allProjectionIn1Frame"
 ARGUMENT_SORT_DIM                   = "-sortDim="
 
-
 PLOT_TYPE_SURFACE                   = "surface"
 PLOT_TYPE_CLOUD                     = "cloud"
 PLOT_TYPE_BAR                       = "bar"
@@ -72,8 +71,8 @@ PLOT_TYPE_POINT                     = "point"
 COLOR_DEFAULT                       = 'black'
 COLOR_LIST                          = ['green',                'black',                    'red',                               'purple',                               'blue',                                     'red',          'black']
 COLOR_CORRESPONDENCE                = ['./posixGlibcIO_sleep', './posixGlibcAIO_sleep',    './posixGlibcAIO_sleep_noSignal',    './posixGlibcIO_sleep_memoryFootprint', './posixGlibcAIO_sleep_memoryFootprint',    'DEV-SL-trunk', 'DEV-SL-AIO']
-POINT_TYPE_LIST                     = ['p',             'x',            'o',        '<', '^', '*', 'D', 'x', '|', 'H']
-POINT_TYPE_CORRESPONDENCE           = ['Total time',    'Compute time', 'Compute time is row wise', 'Compute time[get_sevs_raw]', 'Compute time[set_sevs_raw]', 'Write time']
+POINT_TYPE_LIST                     = ['p',     'x',        'o',                    '<',                        '^',                     '*', 'D', 'x', '|', 'H']
+POINT_TYPE_CORRESPONDENCE           = ['Total', 'Compute',  'Compute is row wise',  'Compute[get_sevs_raw]',    'Compute[set_sevs_raw]', 'Write']
 
 RESULT_DIM_TEXT_DEFAULT             = "Time (s)"
 BAR_SIZE                            = 3
@@ -245,7 +244,7 @@ def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, l
     """
 # TODO end to remove
 
-    pt = find (legendExtra, POINT_TYPE_CORRESPONDENCE)
+    pt = findStartWith (legendExtra, POINT_TYPE_CORRESPONDENCE)
     if (pt < 0):
         pointType = POINT_TYPE_LIST[pointType]
     else:
@@ -266,8 +265,8 @@ def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, l
     if (Z_error != None):
         alpha_fill= 0.1
         col = generateMappedRandomColor()
-        if (legendExtra == 'Compute time'):
-            ax.fill_between(X, Z_error[1], Z_error[0], color=col, alpha=alpha_fill)
+#        if (legendExtra == 'Compute time'):
+        ax.fill_between(X, Z_error[1], Z_error[0], color=col, alpha=alpha_fill)
 
     ax.set_ylabel(Z_label)
     ax.set_xlabel(X_label)

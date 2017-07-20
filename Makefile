@@ -72,8 +72,7 @@ endef
 define compileScorep
 	cd $(1); \
 	cd _build; \
-#	make -j $(NB_CORES)  CXX="scorep-g++ -DNO_INSTRUMENT" SCOREP_WRAPPER_INSTRUMENTER_FLAGS=" --user --nocompiler"; \
-	make -j $(NB_CORES)  CXX="scorep-g++"                 SCOREP_WRAPPER_INSTRUMENTER_FLAGS=" --user --nocompiler"; \
+	make -j $(NB_CORES)  CXX="scorep-g++ $(2)" SCOREP_WRAPPER_INSTRUMENTER_FLAGS=" --user --nocompiler"; \
 	make install -j $(NB_CORES)
 endef
 
@@ -133,11 +132,11 @@ compileAio:
 
 
 compileTrunkScorep:
-			$(call compileScorep, $(PATH_TRUNK))
+			$(call compileScorep, $(PATH_TRUNK)) #, "-DNO_INSTRUMENT")
 
 
 compileAioScorep:
-			$(call compileScorep, $(PATH_AIO))
+			$(call compileScorep, $(PATH_AIO)) #, "-DNO_INSTRUMENT")
 
 
 checkTrunk:		compileTrunkScorep

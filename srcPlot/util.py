@@ -63,6 +63,11 @@ def find(scalar, vector, equalFunc=equal):
         if (equalFunc(scalar, vector[i])):
             return i
     return -1
+def findStartWith(scalarStr, vector):
+    for i in xrange(len(vector)):
+        if (scalarStr.startswith(vector[i])):
+            return i
+    return -1
 
 
 # ---------------------------------------
