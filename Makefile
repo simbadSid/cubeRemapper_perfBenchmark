@@ -36,8 +36,9 @@ BIN_DIR					= bin/
 PATH_TRUNK		= ../DEV-SL-trunk
 PATH_AIO		= ../DEV-SL-AIO
 NB_CORES		= 22
-CUBE_INPUT_SIZE	= 2048
-CUBE_INPUT_FILE	= ../remapperInputDataFile/work/jzam11/jzam1166/measuruments/NPB/NPB3.3-MZ-MPI_scorep-1.2/measurements/E/$(CUBE_INPUT_SIZE)/scorep_sp-mz_E_$(CUBE_INPUT_SIZE)x64_sum_filt/profile.cubex 
+CUBE_INPUT_SIZE	= 128
+CUBE_INPUT_SIZE0= 0$(CUBE_INPUT_SIZE)
+CUBE_INPUT_FILE	= ../remapperInputDataFile/work/jzam11/jzam1166/measuruments/NPB/NPB3.3-MZ-MPI_scorep-1.2/measurements/E/$(CUBE_INPUT_SIZE0)/scorep_sp-mz_E_$(CUBE_INPUT_SIZE)x64_sum_filt/profile.cubex 
 
 
 ## -------------------------------
