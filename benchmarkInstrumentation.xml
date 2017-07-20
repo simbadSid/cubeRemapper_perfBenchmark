@@ -18,10 +18,14 @@
 		<parameter	name="nbProcessor">							2										</parameter>
 		<parameter	name="nbTry">								6										</parameter>
 		<parameter	name="benchmarkResultFile" >				${filePathStatistic}/${branch}.data		</parameter>
-		<parameter	name="cube_totalTime_id">					0										</parameter>
-		<parameter	name="cube_computeTime_id">					1										</parameter>
-		<parameter	name="cube_writeTime_id">					2										</parameter>
 		<parameter	name="pthreadWrapperCommand" type="str">	export LD_PRELOAD=${HACK_PATH}bin/pthreadWrapper.so	</parameter>
+	</parameterset>
+	<parameterset	name="parameterMeasuredDim">
+		<parameter	name="resultDim" type=str>					"Total time,Compute time,Write time"	</parameter>
+		<parameter	name="cube_metric">							time									</parameter>
+		<parameter	name="cube_totalMetric_id">					0										</parameter>
+		<parameter	name="cube_computeMetric_id">				1										</parameter>
+		<parameter	name="cube_writeMetric_id">					2										</parameter>
 	</parameterset>
 
 	<parameterset	name="parameter_variableDim">
@@ -37,6 +41,7 @@
 		<comment>Creates and writes the header of the data files that will contain the benchmark pattern assessment results</comment>
 		<step name="init_outputFile">
 			<use>parameter</use>
+			<use>parameterMeasuredDim</use>
 			<do>echo											>  $HACK_PATH${benchmarkResultFile}	</do>
  			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
 			<do>echo "#Benchmark pattern info:"					>> $HACK_PATH${benchmarkResultFile}	</do>
@@ -51,7 +56,7 @@
 			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
 			<do>echo "#Result dim:"								>> $HACK_PATH${benchmarkResultFile}	</do>
 			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
-			<do>echo "Total time,Compute time,Write time"		>> $HACK_PATH${benchmarkResultFile}	</do>
+			<do>echo ${resultDim}								>> $HACK_PATH${benchmarkResultFile}	</do>
 
 			<do>echo "################################"			>> $HACK_PATH${benchmarkResultFile}	</do>
 			<do>echo "#Number of tries:"						>> $HACK_PATH${benchmarkResultFile}	</do>
@@ -71,9 +76,11 @@
 		<comment>Run the different pattern benchmarks and assess them</comment>
 		<step name="run_benchmark">
 			<use>parameter</use>
+			<use>parameterMeasuredDim</use>
 			<use>parameter_variableDim</use>
 			<!-- Execute the benchmark pattern and write the parameters (thanks to logger option m) -->
 			<do>	echo ${inputCubeFile}</do>
+			<do>	export SCOREP_METRIC_PAPI=PAPI_L1_TCM</do>
 			<do>	export inputCubeFileSize=`stat --printf="%s" $HACK_PATH${inputCubeFile}`	</do>
 			<do>	echo ${inputCubeFileSize}", "${nbIoDevice} >> $HACK_PATH${benchmarkResultFile} </do>
 			<do>	for i in `seq 1 $nbTry`;
@@ -82,8 +89,8 @@
 						${pthreadWrapperCommand}; \
 						${HACK_PATH}${filePathExec}/${fileExec} -r ${HACK_PATH}${cubeSpec} -d -o remappedFile.cubex $HACK_PATH/${inputCubeFile}; \
 						rm remappedFile.cubex; \
-						cube_dump scorep-*/profile.cubex -m time -z incl -c ${cube_totalTime_id} -c ${cube_computeTime_id} -c ${cube_writeTime_id} > $HACK_PATH${cubeDumpResFile};\
-						python $HACK_PATH${fileScriptParseCubeDumpRes} $HACK_PATH${cubeDumpResFile} ${cube_totalTime_id} ${cube_computeTime_id} ${cube_writeTime_id} >> $HACK_PATH${benchmarkResultFile};\
+						cube_dump scorep-*/profile.cubex -m ${cube_metric} -z incl -c ${cube_totalMetric_id} -c ${cube_computeMetric_id} -c ${cube_writeMetric_id} > $HACK_PATH${cubeDumpResFile};\
+						python $HACK_PATH${fileScriptParseCubeDumpRes} $HACK_PATH${cubeDumpResFile} ${cube_totalMetric_id} ${cube_computeMetric_id} ${cube_writeMetric_id} >> $HACK_PATH${benchmarkResultFile};\
 						rm $HACK_PATH${cubeDumpResFile};
 					done;
 			</do>
