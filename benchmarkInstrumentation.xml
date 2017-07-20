@@ -21,8 +21,8 @@
 		<parameter	name="pthreadWrapperCommand" type="str">	export LD_PRELOAD=${HACK_PATH}bin/pthreadWrapper.so	</parameter>
 	</parameterset>
 	<parameterset	name="parameterMeasuredDim">
-		<parameter	name="resultDim" type=str>					"Total time,Compute time,Write time"	</parameter>
-		<parameter	name="cube_metric">							time									</parameter>
+		<parameter	name="cube_metric" type="str">				"time"									</parameter>
+		<parameter	name="resultDim" type=str>					"Total ${cube_metric},Compute ${cube_metric},Write ${cube_metric}"	</parameter>
 		<parameter	name="cube_totalMetric_id">					0										</parameter>
 		<parameter	name="cube_computeMetric_id">				1										</parameter>
 		<parameter	name="cube_writeMetric_id">					2										</parameter>
@@ -80,7 +80,6 @@
 			<use>parameter_variableDim</use>
 			<!-- Execute the benchmark pattern and write the parameters (thanks to logger option m) -->
 			<do>	echo ${inputCubeFile}</do>
-			<do>	export SCOREP_METRIC_PAPI=PAPI_L1_TCM</do>
 			<do>	export inputCubeFileSize=`stat --printf="%s" $HACK_PATH${inputCubeFile}`	</do>
 			<do>	echo ${inputCubeFileSize}", "${nbIoDevice} >> $HACK_PATH${benchmarkResultFile} </do>
 			<do>	for i in `seq 1 $nbTry`;
