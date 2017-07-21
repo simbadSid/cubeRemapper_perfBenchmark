@@ -36,6 +36,9 @@ BIN_DIR						= bin/
 PATH_TRUNK					= ../DEV-SL-trunk
 PATH_AIO					= ../DEV-SL-AIO
 PATH_AIO_NO_FALSE_SHARING	= ../DEV-SL-AIO-noFalseSharing
+PATH_STATISTIC				= resource/statistic
+PATH_STATISTIC_ARCHIVE		= resource/statistic_archive
+
 NB_CORES					= 22
 CUBE_INPUT_SIZE				= 128
 CUBE_INPUT_SIZE0			= 0$(CUBE_INPUT_SIZE)
@@ -215,6 +218,11 @@ plotPointCompare:
 
 plotPoint:
 			jube run benchmarkInstrumentation.xml --only-bench plotPoint
+
+
+plotPointCompareArchive:
+			./setStatisticFromArchiveInteractive.sh $(PATH_STATISTIC) $(PATH_STATISTIC_ARCHIVE); \
+			jube run benchmarkInstrumentation.xml --only-bench plotPointCompare
 
 
 

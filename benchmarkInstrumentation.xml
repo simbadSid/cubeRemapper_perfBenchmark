@@ -15,14 +15,14 @@
 		<parameter	name="cubeDumpResFile">						resource/tmpCubeDumpFile							</parameter>
 		<parameter	name="fileScriptParseCubeDumpRes">			srcPlot/mainParseCubeDumpResFile.py					</parameter>
 		<parameter	name="nbProcessor">							2													</parameter>
-		<parameter	name="nbTry">								2													</parameter>
+		<parameter	name="nbTry">								10													</parameter>
 	</parameterset>
 
 	<parameterset	name="parameterMeasuredDim">
 		<parameter	name="cube_totalMetric_id">					0													</parameter>
 		<parameter	name="cube_computeMetric_id">				1													</parameter>
 		<parameter	name="cube_writeMetric_id">					2													</parameter>
-		<parameter	name="papiMetricListTot" type="str">		PAPI_L1_TCM PAPI_L1_DCM PAPI_L2_TCM PAPI_L2_DCM time</parameter>
+		<parameter	name="papiMetricListTot" type="str">		PAPI_L1_TCM PAPI_L1_DCM PAPI_L2_TCM PAPI_L2_DCM PAPI_L3_TCM time</parameter>
 	</parameterset>
 
 	<parameterset	name="parameter_variableDim">
@@ -64,7 +64,7 @@
 					echo "################################"			>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
 					echo "#Result dim:"								>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
 					echo "################################"			>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
-					echo "Total ${cube_metric},Compute ${cube_metric},Write ${cube_metric}"		>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
+					echo "Total ${cube_metric},Compute ${cube_metric},Write ${cube_metric}"	>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
 					echo "################################"			>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
 					echo "#Number of tries:"						>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
 					echo "################################"			>> $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data;\
@@ -128,12 +128,15 @@
 		<comment>Plot the results of all the benchmark pattern assessments</comment>
 		<!-- Operation -->
 		<step name="plotPoint">
-			<use>parameter							</use>
-			<use>parameterMeasuredDim				</use>
+			<use>parameterPlot			</use>
+			<use>parameterMeasuredDim	</use>
 			<do>cubeMetricList=( ${papiMetricListTot} ); \
 				for cube_metric in "${cubeMetricList[@]}";
 				do
-					python $HACK_PATH${fileScriptPlot} $HACK_PATH${filePathStatistic}${cube_metric}/${branch}.data -multipleTry -plotType=point:nbIoDevice:all -sortDim=fileSize
+					for file in `ls $HACK_PATH${filePathStatistic}${cube_metric}`;
+					do
+						python $HACK_PATH${fileScriptPlot} $HACK_PATH${filePathStatistic}${cube_metric}/${file} -multipleTry -plotType=point:nbIoDevice:all -sortDim=fileSize -resultDimText=${cube_metric}
+					done;
 				done;
 			</do>
 		</step>
@@ -152,7 +155,7 @@
 			<do>cubeMetricList=( ${papiMetricListTot} ); \
 				for cube_metric in "${cubeMetricList[@]}";
 				do
-					python $HACK_PATH${fileScriptPlot} $HACK_PATH${filePathStatistic}${cube_metric}/*.data -multipleTry -plotType=point:nbIoDevice:all -sortDim=fileSize -resultDimText=${cube_metric}; \
+					python $HACK_PATH${fileScriptPlot} $HACK_PATH${filePathStatistic}${cube_metric}/*.data -multipleTry -plotType=point:nbIoDevice:all -sortDim=fileSize -resultDimText=${cube_metric}
 				done;
 			</do>
 		</step>
