@@ -6,7 +6,7 @@
 		<!-- TODO REMOVE WHEN FILE SUBSTITUTION WILL BE IMPLEMENTED -->
 		<parameter	name="HACK_PATH">							../../../../										</parameter>
 		<!-- TODO END REMOVE WHEN FILE SUBSTITUTION WILL BE IMPLEMENTED -->
-		<parameter	name="branch">								DEV-SL-AIO, DEV-SL-trunk							</parameter>
+		<parameter	name="branch">								DEV-SL-AIO, DEV-SL-trunk	</parameter>
 		<parameter	name="fileExec">							cube_remap2											</parameter>
 		<parameter	name="filePathStatistic">					resource/statistic/									</parameter>
 		<parameter	name="filePathExec">						../${branch}/_build/_install/bin/					</parameter>
@@ -22,7 +22,7 @@
 		<parameter	name="cube_totalMetric_id">					0													</parameter>
 		<parameter	name="cube_computeMetric_id">				1													</parameter>
 		<parameter	name="cube_writeMetric_id">					2													</parameter>
-		<parameter	name="papiMetricListTot" type="str">		PAPI_L1_TCM PAPI_L1_DCM time						</parameter>
+		<parameter	name="papiMetricListTot" type="str">		PAPI_L1_TCM PAPI_L1_DCM PAPI_L2_TCM PAPI_L2_DCM time</parameter>
 	</parameterset>
 
 	<parameterset	name="parameter_variableDim">
@@ -77,7 +77,6 @@
 			<use>parameter</use>
 			<use>parameterMeasuredDim</use>
 			<use>parameter_variableDim</use>
-			<!-- Execute the benchmark pattern and write the parameters (thanks to logger option m) -->
 			<do>	export SCOREP_METRIC_PAPI=</do>
 			<do>	cubeMetricList=( ${papiMetricListTot} ); \
 					for cube_metric in "${cubeMetricList[@]}";

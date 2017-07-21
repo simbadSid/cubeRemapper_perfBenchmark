@@ -228,8 +228,8 @@ def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, l
 # TODO end to remove
 
 # TODO to remove
-    if (legendExtra == 'Iterations'):
-        return
+#    if (legendExtra == 'Iterations'):
+#        return
 # TODO end to remove
 
 # TODO to remove

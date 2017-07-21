@@ -28,17 +28,18 @@
 ## -------------------------------
 ## Global variables
 ## -------------------------------
-CC						= g++ -std=c++11
-CFLAGS_UNIX				= -Wall -g -Werror -lrt -pthread
-SRC_DIR_PTHREAD_WRAPPER	= srcPthreadWrapper/
-BIN_DIR					= bin/
+CC							= g++ -std=c++11
+CFLAGS_UNIX					= -Wall -g -Werror -lrt -pthread
+SRC_DIR_PTHREAD_WRAPPER		= srcPthreadWrapper/
+BIN_DIR						= bin/
 
-PATH_TRUNK		= ../DEV-SL-trunk
-PATH_AIO		= ../DEV-SL-AIO
-NB_CORES		= 22
-CUBE_INPUT_SIZE	= 128
-CUBE_INPUT_SIZE0= 0$(CUBE_INPUT_SIZE)
-CUBE_INPUT_FILE	= ../remapperInputDataFile/work/jzam11/jzam1166/measuruments/NPB/NPB3.3-MZ-MPI_scorep-1.2/measurements/E/$(CUBE_INPUT_SIZE0)/scorep_sp-mz_E_$(CUBE_INPUT_SIZE)x64_sum_filt/profile.cubex 
+PATH_TRUNK					= ../DEV-SL-trunk
+PATH_AIO					= ../DEV-SL-AIO
+PATH_AIO_NO_FALSE_SHARING	= ../DEV-SL-AIO-noFalseSharing
+NB_CORES					= 22
+CUBE_INPUT_SIZE				= 128
+CUBE_INPUT_SIZE0			= 0$(CUBE_INPUT_SIZE)
+CUBE_INPUT_FILE				= ../remapperInputDataFile/work/jzam11/jzam1166/measuruments/NPB/NPB3.3-MZ-MPI_scorep-1.2/measurements/E/$(CUBE_INPUT_SIZE0)/scorep_sp-mz_E_$(CUBE_INPUT_SIZE)x64_sum_filt/profile.cubex 
 
 
 ## -------------------------------
@@ -88,7 +89,7 @@ endef
 define preCommit
 	cd $(1); \
 	cd /_build; \
-	vendor/common/beautifier/beautify; \
+	vendor/common/beautifier/beautify ../src/*; \
 	meld . ;
 
 endef
@@ -115,12 +116,20 @@ preCompileAio:
 			$(call preCompile, $(PATH_AIO))
 
 
+preCompileAioNoFalseSharing:
+			$(call preCompile, $(PATH_AIO_NO_FALSE_SHARING))
+
+
 cleanTrunk:
 			$(call clean, $(PATH_TRUNK))
 
 
 cleanAio:
 			$(call clean, $(PATH_AIO))
+
+
+cleanAioNoFalseSharing:
+			$(call clean, $(PATH_AIO_NO_FALSE_SHARING))
 
 
 compileTrunk:
@@ -131,12 +140,20 @@ compileAio:
 			$(call compile, $(PATH_AIO))
 
 
+compileAioNoFalseSharing:
+			$(call compile, $(PATH_AIO_NO_FALSE_SHARING))
+
+
 compileTrunkScorep:
 			$(call compileScorep, $(PATH_TRUNK)) #, "-DNO_INSTRUMENT")
 
 
 compileAioScorep:
 			$(call compileScorep, $(PATH_AIO)) #, "-DNO_INSTRUMENT")
+
+
+compileAioNoFalseSharingScorep:
+			$(call compileScorep, $(PATH_AIO_NO_FALSE_SHARING), -DNO_FALSE_SHARING) #, "-DNO_INSTRUMENT")
 
 
 checkTrunk:		compileTrunkScorep
@@ -147,6 +164,10 @@ checkAio:		compileAioScorep
 			$(call compile, $(PATH_AIO))
 
 
+checkAioNoFalseSharing:		compileAioNoFalseSharingScorep
+			$(call compile, $(PATH_AIO_NO_FALSE_SHARING))
+
+
 printRemapperTimeTrunk:
 			$(call remapperTime, $(PATH_TRUNK))
 
@@ -155,12 +176,20 @@ printRemapperTimeAio:
 			$(call remapperTime, $(PATH_AIO))
 
 
+printRemapperTimeAioNoFalseSharing:
+			$(call remapperTime, $(PATH_AIO_NO_FALSE_SHARING))
+
+
 preCommitTrunk:
 			$(call preCommit, $(PATH_TRUNK))
 
 
 preCommitAio:
 			$(call preCommit, $(PATH_AIO))
+
+
+preCommitAioNoFalseSharing:
+			$(call preCommit, $(PATH_AIO_NO_FALSE_SHARING))
 
 
 #-----------------------------------------------------------------------------------------------------------
