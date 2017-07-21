@@ -6,18 +6,18 @@
 		<!-- TODO REMOVE WHEN FILE SUBSTITUTION WILL BE IMPLEMENTED -->
 		<parameter	name="HACK_PATH">							../../../../										</parameter>
 		<!-- TODO END REMOVE WHEN FILE SUBSTITUTION WILL BE IMPLEMENTED -->
-		<parameter	name="branch">								DEV-SL-AIO, DEV-SL-trunk	</parameter>
+		<parameter	name="branch">								DEV-SL-AIO, DEV-SL-trunk, DEV-SL-AIO-noFalseSharing	</parameter>
 		<parameter	name="fileExec">							cube_remap2											</parameter>
 		<parameter	name="filePathStatistic">					resource/statistic/									</parameter>
 		<parameter	name="filePathExec">						../${branch}/_build/_install/bin/					</parameter>
 		<parameter	name="filePathCubeInput">					resource/cubeInput/									</parameter>
 		<parameter	name="cubeSpec">							resource/cubeInputSpec/ghost.spec					</parameter>
 		<parameter	name="cubeDumpResFile">						resource/tmpCubeDumpFile							</parameter>
-		<parameter	name="fileScriptPlot">						srcPlot/mainPlot.py									</parameter>
 		<parameter	name="fileScriptParseCubeDumpRes">			srcPlot/mainParseCubeDumpResFile.py					</parameter>
 		<parameter	name="nbProcessor">							2													</parameter>
 		<parameter	name="nbTry">								2													</parameter>
 	</parameterset>
+
 	<parameterset	name="parameterMeasuredDim">
 		<parameter	name="cube_totalMetric_id">					0													</parameter>
 		<parameter	name="cube_computeMetric_id">				1													</parameter>
@@ -28,6 +28,15 @@
 	<parameterset	name="parameter_variableDim">
 		<parameter	name="nbIoDevice">							1													</parameter>
 		<parameter	name="inputCubeFile"		mode="python">	",".join("${filePathCubeInput}/"+file for file in os.listdir("${filePathCubeInput}"))	</parameter>
+	</parameterset>
+
+	<!-- Redefine data for the plot (to avoid multiple plot of the saem picture) -->
+	<parameterset	name="parameterPlot">
+		<!-- TODO REMOVE WHEN FILE SUBSTITUTION WILL BE IMPLEMENTED -->
+		<parameter	name="HACK_PATH">							../../../../										</parameter>
+		<!-- TODO END REMOVE WHEN FILE SUBSTITUTION WILL BE IMPLEMENTED -->
+		<parameter	name="fileScriptPlot">						srcPlot/mainPlot.py									</parameter>
+		<parameter	name="filePathStatistic">					resource/statistic/									</parameter>
 	</parameterset>
 
 
@@ -138,8 +147,8 @@
 		<comment>Plot the results of all the benchmark pattern assessments</comment>
 		<!-- Operation -->
 		<step name="plotPointCompare">
-			<use>parameter							</use>
-			<use>parameterMeasuredDim				</use>
+			<use>parameterPlot			</use>
+			<use>parameterMeasuredDim	</use>
 			<do>cubeMetricList=( ${papiMetricListTot} ); \
 				for cube_metric in "${cubeMetricList[@]}";
 				do

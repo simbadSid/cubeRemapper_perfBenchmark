@@ -68,9 +68,9 @@ PLOT_TYPE_CLOUD                     = "cloud"
 PLOT_TYPE_BAR                       = "bar"
 PLOT_TYPE_POINT                     = "point"
 
-COLOR_DEFAULT                       = 'black'
-COLOR_LIST                          = ['green',                'black',                    'red',                               'purple',                               'blue',                                     'red',          'black']
-COLOR_CORRESPONDENCE                = ['./posixGlibcIO_sleep', './posixGlibcAIO_sleep',    './posixGlibcAIO_sleep_noSignal',    './posixGlibcIO_sleep_memoryFootprint', './posixGlibcAIO_sleep_memoryFootprint',    'DEV-SL-trunk', 'DEV-SL-AIO']
+COLOR_DEFAULT                       = 'magenta'
+COLOR_LIST                          = ['green',                'black',                    'red',                               'purple',                               'blue',                                     'red',          'black',        'green']
+COLOR_CORRESPONDENCE                = ['./posixGlibcIO_sleep', './posixGlibcAIO_sleep',    './posixGlibcAIO_sleep_noSignal',    './posixGlibcIO_sleep_memoryFootprint', './posixGlibcAIO_sleep_memoryFootprint',    'DEV-SL-trunk', 'DEV-SL-AIO',   'DEV-SL-AIO-noFalseSharing']
 POINT_TYPE_LIST                     = ['p',     'x',        'o',                    '<',                        '^',                     '*', 'D', 'x', '|', 'H']
 POINT_TYPE_CORRESPONDENCE           = ['Total', 'Compute',  'Compute is row wise',  'Compute[get_sevs_raw]',    'Compute[set_sevs_raw]', 'Write']
 
