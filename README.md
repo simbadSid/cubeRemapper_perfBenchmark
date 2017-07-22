@@ -1,6 +1,7 @@
 # Performance assessment of the cube Remapper
 This project allows to assess the performance of the [Cube](http://www.scalasca.org/software/cube-4.x/download.html) plugin: "remapper".</br>
 We mainly compare the deployed implementation (refered to as [trunk](https://svn.version.fz-juelich.de/scalasca_soft/Cube2.0/CubeLib/trunk)) with our custom one (refered to as [AIO](https://svn.version.fz-juelich.de/scalasca_soft/Cube2.0/CubeLib/branches/DEV-SL-AIO)). </br>
+For more details on this project or the cube remapper custom implementation, please refer to my [thesis](https://trac.version.fz-juelich.de/scalasca_docs/browser/Theses/2017/sidlakhdar/Thesis/main.pdf).
 
 ## Prerequisite
 Before installing or running any of the cited projects, one must insure that the following tools are installed:
@@ -23,9 +24,15 @@ Once the two previously cited project ([trunk](https://svn.version.fz-juelich.de
 ## Run the performance evaluation
 The performance evaluation might be runed through the command </br>
 >make runAllBenchmark </br>
+
 Then the results might be ploted through different graphical representations using the command </br>
+
 >make plotPointCompare </br>
 >make plotPoint </br>
 
 ## The custom pthread wrapper
+TODO
+
+## The custom alligned allocation
+This thread safe version of posix_memalign has beed designed specifically for our memory access pattern:
 TODO

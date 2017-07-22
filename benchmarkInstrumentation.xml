@@ -6,7 +6,7 @@
 		<!-- TODO REMOVE WHEN FILE SUBSTITUTION WILL BE IMPLEMENTED -->
 		<parameter	name="HACK_PATH">							../../../../										</parameter>
 		<!-- TODO END REMOVE WHEN FILE SUBSTITUTION WILL BE IMPLEMENTED -->
-		<parameter	name="branch">								DEV-SL-AIO, DEV-SL-trunk, DEV-SL-AIO-noFalseSharing, DEV-SL-AIO-noFalseSharing-tcmalloc	</parameter>
+		<parameter	name="branch">								DEV-SL-AIO, DEV-SL-trunk, DEV-SL-AIO-noFalseSharing, DEV-SL-AIO-noFalseSharing-customAlloc	</parameter>
 		<parameter	name="fileExec">							cube_remap2											</parameter>
 		<parameter	name="filePathStatistic">					resource/statistic/									</parameter>
 		<parameter	name="filePathExec">						../${branch}/_build/_install/bin/					</parameter>
@@ -106,13 +106,13 @@
 			<do>	for i in `seq 1 $nbTry`;
 					do
 						rm -rf  scorep-*; \
-						if [ $branch == "DEV-SL-AIO-noFalseSharing-tcmalloc" ]; then
-							export LD_PRELOAD=$LIB_TCMALLOC; \
-							${HACK_PATH}${filePathExec}/${fileExec} -r ${HACK_PATH}${cubeSpec} -d -o remappedFile.cubex $HACK_PATH/${inputCubeFile}; \
-							export LD_PRELOAD=""; \
-						else
-							${HACK_PATH}${filePathExec}/${fileExec} -r ${HACK_PATH}${cubeSpec} -d -o remappedFile.cubex $HACK_PATH/${inputCubeFile}; \
-						fi;\
+if [ $branch == "DEV-SL-AIO-noFalseSharing-customAlloc" ]; then
+	export LD_PRELOAD=$LIB_TCMALLOC; \
+	${HACK_PATH}${filePathExec}/${fileExec} -r ${HACK_PATH}${cubeSpec} -d -o remappedFile.cubex $HACK_PATH/${inputCubeFile}; \
+	export LD_PRELOAD=""; \
+else
+	${HACK_PATH}${filePathExec}/${fileExec} -r ${HACK_PATH}${cubeSpec} -d -o remappedFile.cubex $HACK_PATH/${inputCubeFile}; \
+fi;\
 						rm remappedFile.cubex; \
 						cubeMetricList=( ${papiMetricListTot} ); \
 						for cube_metric in "${cubeMetricList[@]}";

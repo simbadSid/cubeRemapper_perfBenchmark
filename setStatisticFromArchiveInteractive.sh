@@ -8,7 +8,7 @@ dateAndTime=`date | tr \  _ | tr \: -`
 BACKUP_FILE="z_backup_${dateAndTime}.tar"
 
 HEIGHT=15
-WIDTH=60
+WIDTH=100
 CHOICE_HEIGHT=4
 BACKTITLE="Backtitle here"
 TITLE="Title here"
