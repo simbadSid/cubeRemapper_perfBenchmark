@@ -15,14 +15,14 @@
 		<parameter	name="cubeDumpResFile">						resource/tmpCubeDumpFile							</parameter>
 		<parameter	name="fileScriptParseCubeDumpRes">			srcPlot/mainParseCubeDumpResFile.py					</parameter>
 		<parameter	name="nbProcessor">							2													</parameter>
-		<parameter	name="nbTry">								10													</parameter>
+		<parameter	name="nbTry">								5													</parameter>
 	</parameterset>
 
 	<parameterset	name="parameterMeasuredDim">
 		<parameter	name="cube_totalMetric_id">					0													</parameter>
 		<parameter	name="cube_computeMetric_id">				1													</parameter>
 		<parameter	name="cube_writeMetric_id">					2													</parameter>
-		<parameter	name="papiMetricListTot" type="str">		PAPI_L1_TCM PAPI_L1_DCM PAPI_L2_TCM PAPI_L2_DCM PAPI_L3_TCM time</parameter>
+		<parameter	name="papiMetricListTot" type="str">		PAPI_L1_TCM PAPI_L2_TCM PAPI_L3_TCM time</parameter>
 	</parameterset>
 
 	<parameterset	name="parameter_variableDim">

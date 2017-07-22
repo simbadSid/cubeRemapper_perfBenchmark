@@ -68,7 +68,7 @@ endef
 define compile
 	cd $(1); \
 	cd _build; \
-	make -j $(NB_CORES) -I/usr/bin/include -I/usr/bin/include/scorep; \
+	make -j $(NB_CORES) CXX="$(CC) $(2)" ; \
 	make install -j $(NB_CORES)
 endef
 
@@ -91,8 +91,9 @@ endef
 
 define preCommit
 	cd $(1); \
-	cd /_build; \
-	vendor/common/beautifier/beautify ../src/*; \
+	cd _build; \
+	../vendor/common/beautifier/beautify ../src/*; \
+	cd ../; \
 	meld . ;
 
 endef
@@ -136,15 +137,15 @@ cleanAioNoFalseSharing:
 
 
 compileTrunk:
-			$(call compile, $(PATH_TRUNK))
+			$(call compile, $(PATH_TRUNK), "-DNO_INSTRUMENT")
 
 
 compileAio:
-			$(call compile, $(PATH_AIO))
+			$(call compile, $(PATH_AIO), "-DNO_INSTRUMENT")
 
 
 compileAioNoFalseSharing:
-			$(call compile, $(PATH_AIO_NO_FALSE_SHARING))
+			$(call compile, $(PATH_AIO_NO_FALSE_SHARING), "-DNO_INSTRUMENT -DNO_FALSE_SHARING")
 
 
 compileTrunkScorep:
@@ -156,19 +157,19 @@ compileAioScorep:
 
 
 compileAioNoFalseSharingScorep:
-			$(call compileScorep, $(PATH_AIO_NO_FALSE_SHARING), -DNO_FALSE_SHARING) #, "-DNO_INSTRUMENT")
+			$(call compileScorep, $(PATH_AIO_NO_FALSE_SHARING), "-DNO_FALSE_SHARING") #, "-DNO_INSTRUMENT")
 
 
-checkTrunk:		compileTrunkScorep
-			$(call compile, $(PATH_TRUNK))
+checkTrunk:		compileTrunk
+			$(call check, $(PATH_TRUNK))
 
 
-checkAio:		compileAioScorep
-			$(call compile, $(PATH_AIO))
+checkAio:		compileAio
+			$(call check, $(PATH_AIO))
 
 
-checkAioNoFalseSharing:		compileAioNoFalseSharingScorep
-			$(call compile, $(PATH_AIO_NO_FALSE_SHARING))
+checkAioNoFalseSharing:		compileAioNoFalseSharing
+			$(call check, $(PATH_AIO_NO_FALSE_SHARING))
 
 
 printRemapperTimeTrunk:
@@ -207,7 +208,7 @@ pthreadWrapper.so:
 #-----------------------------------------------------------------------------------------------------------
 #---------------------------------------- Experimentation Methodes -----------------------------------------
 #-----------------------------------------------------------------------------------------------------------
-runAllBenchmark:
+runAllBenchmark:	compileTrunkScorep compileAioScorep compileAioNoFalseSharingScorep
 			jube run benchmarkInstrumentation.xml --only-bench init_outputFile; \
 			jube run benchmarkInstrumentation.xml --only-bench run_benchmark;
 
