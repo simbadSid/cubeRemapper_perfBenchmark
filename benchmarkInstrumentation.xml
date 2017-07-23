@@ -106,13 +106,7 @@
 			<do>	for i in `seq 1 $nbTry`;
 					do
 						rm -rf  scorep-*; \
-if [ $branch == "DEV-SL-AIO-noFalseSharing-customAlloc" ]; then
-	export LD_PRELOAD=$LIB_TCMALLOC; \
-	${HACK_PATH}${filePathExec}/${fileExec} -r ${HACK_PATH}${cubeSpec} -d -o remappedFile.cubex $HACK_PATH/${inputCubeFile}; \
-	export LD_PRELOAD=""; \
-else
-	${HACK_PATH}${filePathExec}/${fileExec} -r ${HACK_PATH}${cubeSpec} -d -o remappedFile.cubex $HACK_PATH/${inputCubeFile}; \
-fi;\
+						${HACK_PATH}${filePathExec}/${fileExec} -r ${HACK_PATH}${cubeSpec} -d -o remappedFile.cubex $HACK_PATH/${inputCubeFile}; \
 						rm remappedFile.cubex; \
 						cubeMetricList=( ${papiMetricListTot} ); \
 						for cube_metric in "${cubeMetricList[@]}";

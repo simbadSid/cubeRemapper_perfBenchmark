@@ -26,9 +26,13 @@ The performance evaluation might be runed through the command </br>
 >make runAllBenchmark </br>
 
 Then the results might be ploted through different graphical representations using the command </br>
-
 >make plotPointCompare </br>
 >make plotPoint </br>
+
+To plot some previous performance results (obtaines on the HPC Intel Xeon CPU E5-2680 v3 @ 2.50GHz), you can run the command </br>
+>make plotPointCompareArchive
+
+An HMI will allow you to choose among different archives that we obtained.
 
 ## The custom pthread wrapper
 TODO
