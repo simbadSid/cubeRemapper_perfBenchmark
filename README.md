@@ -6,6 +6,9 @@ For more details on this project or the cube remapper custom implementation, ple
 ## Prerequisite
 Before installing or running any of the cited projects, one must insure that the following tools are installed:
   1. [Score-P](http://www.vi-hps.org/projects/score-p/)(see the INSTALL file within the Score-P project).  The "orphaned pthreads" version needs to be used.</br>
+  If PAPI is not recognized by Score-P during the installation, one must restart the whole process by previously running the command:
+  > ./configure --without-shmem --with-papi-lib=<path to PAPI>/lib --with-papi-header=<path to PAPI>/include
+		--with-papi-header=/homeb/zam/sidlakhr/papi-5.5.1/src/_install/include/ \
   2. [Cube](http://www.scalasca.org/software/cube-4.x/download.html) (see the INSTALL file within Cube project).  We will re install different version of it.   But this basic version is required for internal profiling needs.</br>
   3. [JUBE](http://www.fz-juelich.de/ias/jsc/EN/Expertise/Support/Software/JUBE/JUBE2/_node.html)</br>
   4. [PAPI](http://icl.cs.utk.edu/papi/index.html) </br>

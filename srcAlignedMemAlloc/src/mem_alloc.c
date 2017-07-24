@@ -14,13 +14,13 @@
 // ----------------------------------
 // Data structure for the memory blocks
 // ----------------------------------
-typedef struct free_block				// Structure declaration for a free block
+typedef struct free_block				// < Structure declaration for a free block
 {
 	int size;
 	struct free_block *next;
 } free_block_s, *free_block_t;
 
-typedef struct							// Structure declaration for an occupied block
+typedef struct							// < Structure declaration for an occupied block
 {
 	int size;
 } busy_block_s, *busy_block_t;
@@ -28,8 +28,8 @@ typedef struct							// Structure declaration for an occupied block
 // ----------------------------------
 // Memory definition
 // ----------------------------------
-char memory[MEMORY_SIZE]; 				// Hall memory array
-free_block_t first_free;				// Pointer to the first free block in the memory
+char memory[MEMORY_SIZE]; 				// < Hall memory array
+free_block_t first_free;				// < Pointer to the first free block in the memory
 char memoryAllocationPolicy = MEMORY_FIRST_FIT;
 
 
@@ -48,14 +48,14 @@ void memory_init(void)
 	first_free->next= NULL;
 }
 
-// ----------------------------------
-// Allocation main function.
-// Allocates a contiguous memory block with the requested size.
-// The allocation algorithm used depends on the policy defined by the macros MEMORY_ALLOCATION_POLICY.
-// Return the address of the fist usable byte in the allocated memory block (Excluding the block header).
-// If the requested size is lower than the minimum free block size, the allocated size is equal to the minimum free block size.
-// If the free block created by the allocation is lower than the minimum free block size, this free block is included in allocated block.
-// ----------------------------------
+/**
+ *  Allocation main function.
+ *  Allocates a contiguous memory block with the requested size.
+ *  The allocation algorithm used depends on the policy defined by the macros MEMORY_ALLOCATION_POLICY.
+ *  Return the address of the fist usable byte in the allocated memory block (Excluding the block header).
+ *  If the requested size is lower than the minimum free block size, the allocated size is equal to the minimum free block size.
+ *  If the free block created by the allocation is lower than the minimum free block size, this free block is included in allocated block.
+ */
 char *memory_alloc(int size)
 {
 	int actual_size;
@@ -79,22 +79,22 @@ char *memory_alloc(int size)
 	return (char*)bb;
 }
 
-// ----------------------------------
-// Find a memory block corresponding to the request, using the "first fit" policy.
-// Input parameters:
-//	- requestedSize:	size of the memory block requested by the user.
-// Output parameters:
-//	- addr:				address of the fist byte in the allocated memory block (Including the block header).
-//	- allocatesSize:	size of the total allocated memory (Including the block header).
-// Return 0 if no corresponding memory block has been founded and 1 otherwise.
-// ----------------------------------
+/**
+ *  Find a memory block corresponding to the request, using the "first fit" policy.
+ *  Input parameters:
+ * 	- requestedSize:	size of the memory block requested by the user.
+ *  Output parameters:
+ * 	- addr:				address of the fist byte in the allocated memory block (Including the block header).
+ * 	- allocatesSize:	size of the total allocated memory (Including the block header).
+ *  Return 0 if no corresponding memory block has been founded and 1 otherwise.
+ */
 char findMemory_firstFit(int requestedSize, char **addr, int *allocatedSize)
 {
 	free_block_t freeBlocks = first_free, previous=NULL, newFree;
 	int size	= requestedSize + sizeof(busy_block_s);
 	int min_fbs	= sizeof(free_block_s);
 
-	if (size < min_fbs)	size = min_fbs;					// Case: the requested size is smallest than the min size allowed
+	if (size < min_fbs)	size = min_fbs;					// < Case: the requested size is smallest than the min size allowed
 
 	while (freeBlocks != NULL)
 	{
@@ -102,15 +102,15 @@ char findMemory_firstFit(int requestedSize, char **addr, int *allocatedSize)
 		previous	= freeBlocks;
 		freeBlocks	= freeBlocks->next;
 	}
-	if (freeBlocks == NULL) return 0;					// Case: no free block big enough founded
+	if (freeBlocks == NULL) return 0;					// < Case: no free block big enough founded
 	*addr = (char*)freeBlocks;
-	if ((freeBlocks->size - size) <= min_fbs)			// Case: the created free block size is too small: include it in the allocated block
-	{													// Case: no created free block
+	if ((freeBlocks->size - size) <= min_fbs)			// < Case: the created free block size is too small: include it in the allocated block
+	{													// < Case: no created free block
 		*allocatedSize	= freeBlocks->size;
 		if (previous == NULL)	first_free		= freeBlocks->next;
 		else					previous->next	= freeBlocks->next;
 	}
-	else												// Case: else
+	else												// < Case: else
 	{
 		*allocatedSize	= size;
 		newFree			= (free_block_t)((char*)freeBlocks + size);
@@ -121,22 +121,22 @@ char findMemory_firstFit(int requestedSize, char **addr, int *allocatedSize)
 	}
 	return 1;
 }
-// ----------------------------------
-// Find a memory block corresponding to the request, using the "best fit" policy.
-// Input parameters:
-//	- requestedSize:	size of the memory block requested by the user.
-// Output parameters:
-//	- addr:				address of the fist byte in the allocated memory block (Including the block header).
-//	- allocatesSize:	size of the total allocated memory (Including the block header).
-// Return 0 if no corresponding memory block has been founded and 1 otherwise.
-// ----------------------------------
+/**
+ *  Find a memory block corresponding to the request, using the "best fit" policy.
+ *  Input parameters:
+ * 	- requestedSize:	size of the memory block requested by the user.
+ *  Output parameters:
+ * 	- addr:				address of the fist byte in the allocated memory block (Including the block header).
+ * 	- allocatesSize:	size of the total allocated memory (Including the block header).
+ *  Return 0 if no corresponding memory block has been founded and 1 otherwise.
+ */
 char findMemory_bestFit(int requestedSize, char **addr, int *allocatedSize)
 {
 	free_block_t freeBlocks = first_free, previous=NULL, best = NULL, previousBest=NULL, newFree;
 	int size	= requestedSize + sizeof(busy_block_s);
 	int min_fbs	= sizeof(free_block_s);
 
-	if (size < min_fbs)	size = min_fbs;					// Case: the requested size is smallest than the min size allowed
+	if (size < min_fbs)	size = min_fbs;					// < Case: the requested size is smallest than the min size allowed
 
 	while (freeBlocks != NULL)
 	{
@@ -155,15 +155,15 @@ char findMemory_bestFit(int requestedSize, char **addr, int *allocatedSize)
 		previous	= freeBlocks;
 		freeBlocks	= freeBlocks->next;
 	}
-	if (best == NULL) return 0;							// Case: no free block big enough founded
+	if (best == NULL) return 0;							// < Case: no free block big enough founded
 	*addr = (char*)best;
-	if ((best->size - size) <= min_fbs)					// Case: the created free block size is too small: include it in the allocated block
-	{													// Case: no created free block
+	if ((best->size - size) <= min_fbs)					// < Case: the created free block size is too small: include it in the allocated block
+	{													// < Case: no created free block
 		*allocatedSize	= best->size;
 		if (previousBest == NULL)	first_free			= best->next;
 		else						previousBest->next	= best->next;
 	}
-	else												// Case: else
+	else												// < Case: else
 	{
 		*allocatedSize	= size;
 		newFree			= (free_block_t)((char*)best + size);
@@ -174,22 +174,22 @@ char findMemory_bestFit(int requestedSize, char **addr, int *allocatedSize)
 	}
 	return 1;
 }
-// ----------------------------------
-// Find a memory block corresponding to the request, using the "worst fit" policy.
-// Input parameters:
-//	- requestedSize:	size of the memory block requested by the user.
-// Output parameters:
-//	- addr:				address of the fist byte in the allocated memory block (Including the block header).
-//	- allocatesSize:	size of the total allocated memory (Including the block header).
-// Return 0 if no corresponding memory block has been founded and 1 otherwise.
-// ----------------------------------
+/**
+ *  Find a memory block corresponding to the request, using the "worst fit" policy.
+ *  Input parameters:
+ * 	- requestedSize:	size of the memory block requested by the user.
+ *  Output parameters:
+ * 	- addr:				address of the fist byte in the allocated memory block (Including the block header).
+ * 	- allocatesSize:	size of the total allocated memory (Including the block header).
+ *  Return 0 if no corresponding memory block has been founded and 1 otherwise.
+ */
 char findMemory_worstFit(int requestedSize, char **addr, int *allocatedSize)
 {
 	free_block_t freeBlocks = first_free, previous=NULL, best=NULL, previousBest=NULL, newFree;
 	int size	= requestedSize + sizeof(busy_block_s);
 	int min_fbs	= sizeof(free_block_s);
 
-	if (size < min_fbs)	size = min_fbs;					// Case: the requested size is smallest than the min size allowed
+	if (size < min_fbs)	size = min_fbs;					// < Case: the requested size is smallest than the min size allowed
 
 	while (freeBlocks != NULL)
 	{
@@ -202,15 +202,15 @@ char findMemory_worstFit(int requestedSize, char **addr, int *allocatedSize)
 		previous	= freeBlocks;
 		freeBlocks	= freeBlocks->next;
 	}
-	if (best == NULL) return 0;							// Case: no free block big enough founded
+	if (best == NULL) return 0;							// < Case: no free block big enough founded
 	*addr = (char*)best;
-	if ((best->size - size) <= min_fbs)					// Case: the created free block size is too small: include it in the allocated block
-	{													// Case: no created free block
+	if ((best->size - size) <= min_fbs)					// < Case: the created free block size is too small: include it in the allocated block
+	{													// < Case: no created free block
 		*allocatedSize	= best->size;
 		if (previousBest == NULL)	first_free			= best->next;
 		else						previousBest->next	= best->next;
 	}
-	else												// Case: else
+	else												// < Case: else
 	{
 		*allocatedSize	= size;
 		newFree			= (free_block_t)((char*)best + size);
@@ -222,10 +222,10 @@ char findMemory_worstFit(int requestedSize, char **addr, int *allocatedSize)
 	return 1;
 }
 
-// ----------------------------------
-// Free the memory block p and its headers.
-// May potentially merge the created free block with the previous and the next ones.
-// ----------------------------------
+/**
+ *  Free the memory block p and its headers.
+ *  May potentially merge the created free block with the previous and the next ones.
+ */
 void memory_free(char *p)
 {
 	print_free_info(p); 
@@ -235,44 +235,44 @@ void memory_free(char *p)
 	busy_block_t bb			= (busy_block_t)((char*)p - sizeof(busy_block_s));
 	int size = bb->size + sizeof(busy_block_s);
 
-	if (first_free == NULL)													// Case: full memory
+	if (first_free == NULL)													// < Case: full memory
 	{
 		first_free			= (free_block_t)bb;
 		first_free->size	= size;
 		first_free->next	= NULL;
 		return;
 	}
-	while(next < (free_block_t)bb)											// Find the the surrounding free blocks
+	while(next < (free_block_t)bb)											// < Find the the surrounding free blocks
 	{
 		previous	= next;
 		next		= next->next;
 	}
 	if (next == (free_block_t)bb) printFatalError("memory_free", "Corrupted memory: busy and free block");
-	if (previous != NULL)													// Merge with previous
+	if (previous != NULL)													// < Merge with previous
 	{
-		if ((char*)previous + previous->size == (char*)bb)					//		Case: merge with previous
+		if ((char*)previous + previous->size == (char*)bb)					// <		Case: merge with previous
 		{
 			previous->size = previous->size + size;
 			new = previous;
 		}
-		else																//		Case: no merge with previous
+		else																// <		Case: no merge with previous
 		{
 			new				= (free_block_t)bb;
 			new->size		= size;
 			previous->next	= new;
 		}
 	}
-	else																	//		Case: p is before first_free
+	else																	// <		Case: p is before first_free
 	{
 		if (next != first_free) printFatalError("memory_free", "Corrupted memory: wrong first_free pointer");
 		first_free		= (free_block_t)bb;
 		new				= (free_block_t)bb;
 		new->size		= size;
 	}
-																			// Merge with next
-	if		(next == NULL)							new->next = NULL;		//		Case: no next
-	else if ((char*)new + new->size < (char*)next)new->next = next;			//		Case: no merge
-	else if ((char*)new + new->size ==(char*)next)							//		Case: merge
+																			// < Merge with next
+	if		(next == NULL)							new->next = NULL;		// <		Case: no next
+	else if ((char*)new + new->size < (char*)next)new->next = next;			// <		Case: no merge
+	else if ((char*)new + new->size ==(char*)next)							// <		Case: merge
 	{
 		new->size	= new->size+next->size;
 		new->next	= next->next;
