@@ -1,4 +1,6 @@
-#!/bin/bash
+
+
+
 
 
 if [ $LIB_TCMALLOC == "" ]
@@ -12,8 +14,9 @@ fi
 
 
 export LD_PRELOAD=$LIB_TCMALLOC
-shift
-./cube_remap2_payloadBin $@
+#shift
+# The following TARGET will be replaced by the path to the remapper binary
+${REMAPPER_BIN_TARGET} $@
 export LD_PRELOAD=""
 
 

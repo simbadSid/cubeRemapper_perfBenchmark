@@ -28,24 +28,24 @@
 ## -------------------------------
 ## Global variables
 ## -------------------------------
-CC										= g++ -std=c++11
-CFLAGS_UNIX								= -Wall -g -Werror -lrt -pthread
-SRC_DIR_PTHREAD_WRAPPER					= srcPthreadWrapper/
-BIN_DIR									= bin/
+CC										=g++ -std=c++11
+CFLAGS_UNIX								=-Wall -g -Werror -lrt -pthread
+SRC_DIR_PTHREAD_WRAPPER					=srcPthreadWrapper/
+BIN_DIR									=bin/
 
-PATH_TRUNK								= ../DEV-SL-trunk
-PATH_TRUNK_TC_MALLOC					= ../DEV-SL-trunk-tcmalloc
-PATH_AIO								= ../DEV-SL-AIO
-PATH_AIO_NO_FALSE_SHARING				= ../DEV-SL-AIO-noFalseSharing
-PATH_AIO_NO_FALSE_SHARING_TCMALLOC		= ../DEV-SL-AIO-noFalseSharing-tcmalloc
-PATH_STATISTIC							= resource/statistic
-PATH_STATISTIC_ARCHIVE					= resource/statistic_archive
-PATH_CUBE_RAMAPPER_BIN					= _install/bin/cube_remap2
+PATH_TRUNK								=../DEV-SL-trunk/
+PATH_TRUNK_TCMALLOC						=../DEV-SL-trunk-tcmalloc/
+PATH_AIO								=../DEV-SL-AIO/
+PATH_AIO_NO_FALSE_SHARING				=../DEV-SL-AIO-noFalseSharing/
+PATH_AIO_NO_FALSE_SHARING_TCMALLOC		=../DEV-SL-AIO-noFalseSharing-tcmalloc/
+PATH_STATISTIC							=resource/statistic/
+PATH_STATISTIC_ARCHIVE					=resource/statistic_archive/
+PATH_CUBE_RAMAPPER_BIN					=_build/_install/bin/cube_remap2
 
-NB_CORES								= 22
-CUBE_INPUT_SIZE							= 128
-CUBE_INPUT_SIZE0						= 0$(CUBE_INPUT_SIZE)
-CUBE_INPUT_FILE							= ../remapperInputDataFile/work/jzam11/jzam1166/measuruments/NPB/NPB3.3-MZ-MPI_scorep-1.2/measurements/E/$(CUBE_INPUT_SIZE0)/scorep_sp-mz_E_$(CUBE_INPUT_SIZE)x64_sum_filt/profile.cubex 
+NB_CORES								=22
+CUBE_INPUT_SIZE							=128
+CUBE_INPUT_SIZE0						=0$(CUBE_INPUT_SIZE)
+CUBE_INPUT_FILE							=../remapperInputDataFile/work/jzam11/jzam1166/measuruments/NPB/NPB3.3-MZ-MPI_scorep-1.2/measurements/E/$(CUBE_INPUT_SIZE0)/scorep_sp-mz_E_$(CUBE_INPUT_SIZE)x64_sum_filt/profile.cubex 
 
 
 ## -------------------------------
@@ -64,7 +64,7 @@ endef
 define clean
 	cd $(1); \
 	cd _build; \
-	make clean;
+	make clean
 endef
 
 
@@ -77,10 +77,10 @@ endef
 
 
 define compileScorep
-	cd $(1); \
-	cd _build; \
+	cd $(1)/_build; \
 	make -j $(NB_CORES)  CXX="scorep-g++ $(2)" SCOREP_WRAPPER_INSTRUMENTER_FLAGS=" --user --nocompiler"; \
-	make install -j $(NB_CORES)
+	make install -j $(NB_CORES); \
+	cd -
 endef
 
 
@@ -88,7 +88,7 @@ define check
 	cd $(1); \
 	cd _build; \
 	make check; \
-	vim build-frontend/test-suite.log;
+	vim build-frontend/test-suite.log
 endef
 
 
@@ -97,8 +97,7 @@ define preCommit
 	cd _build; \
 	../vendor/common/beautifier/beautify ../src/*; \
 	cd ../; \
-	meld . ;
-
+	meld .
 endef
 
 
@@ -112,151 +111,159 @@ define remapperTime
 endef
 
 
+# Assumes we are already in the proper directory
+define createTcmallocWrapper  
+	pwd; \
+	mv $(1)$(PATH_CUBE_RAMAPPER_BIN) $(1)$(PATH_CUBE_RAMAPPER_BIN)_payloadBin ;\
+	echo '#!/bin/bash'															>  $(1)$(PATH_CUBE_RAMAPPER_BIN); \
+	echo "REMAPPER_BIN_TARGET="`pwd`"/$(1)$(PATH_CUBE_RAMAPPER_BIN)_payloadBin"	>> $(1)$(PATH_CUBE_RAMAPPER_BIN); \
+	cat srcTool/templateWrapRemapperExec										>> $(1)$(PATH_CUBE_RAMAPPER_BIN); \
+	chmod +777 $(1)$(PATH_CUBE_RAMAPPER_BIN);
+endef
+
+
 ## -------------------------------
 ## Local functions
 ## -------------------------------
 preCompileTrunk:
-			$(call preCompile, $(PATH_TRUNK))
+			$(call preCompile,$(PATH_TRUNK))
 
 
 preCompileTrunkTcmalloc:
-			$(call preCompile, $(PATH_TRUNK_TCMALLOC))
+			$(call preCompile,$(PATH_TRUNK_TCMALLOC))
 
 
 preCompileAio:
-			$(call preCompile, $(PATH_AIO))
+			$(call preCompile,$(PATH_AIO))
 
 
 preCompileAioNoFalseSharing:
-			$(call preCompile, $(PATH_AIO_NO_FALSE_SHARING))
+			$(call preCompile,$(PATH_AIO_NO_FALSE_SHARING))
 
 
 preCompileAioNoFalseSharingTcmalloc:
-			$(call preCompile, $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC))
+			$(call preCompile,$(PATH_AIO_NO_FALSE_SHARING_TCMALLOC))
 
 
 cleanTrunk:
-			$(call clean, $(PATH_TRUNK))
+			$(call clean,$(PATH_TRUNK))
 
 
 cleanTrunkTcmalloc:
-			$(call clean, $(PATH_TRUNK_TCMALLOC))
+			$(call clean,$(PATH_TRUNK_TCMALLOC))
 
 
 cleanAio:
-			$(call clean, $(PATH_AIO))
+			$(call clean,$(PATH_AIO))
 
 
 cleanAioNoFalseSharing:
-			$(call clean, $(PATH_AIO_NO_FALSE_SHARING))
+			$(call clean,$(PATH_AIO_NO_FALSE_SHARING))
 
 
 cleanAioNoFalseSharingTcmalloc:
-			$(call clean, $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC))
+			$(call clean,$(PATH_AIO_NO_FALSE_SHARING_TCMALLOC))
 
 
 compileTrunk:
-			$(call compile, $(PATH_TRUNK), "-DNO_INSTRUMENT")
+			$(call compile,$(PATH_TRUNK), "-DNO_INSTRUMENT")
 
 
 compileTrunkTcmalloc:
-			$(call compile, $(PATH_TRUNK_TCMALLOC), "-DNO_INSTRUMENT"); \
-			mv $(PATH_TRUNK_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN) $(PATH_TRUNK_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN)_payloadBin ;\
-			cat srcTool/templateWrapRemapperExec > $(PATH_TRUNK_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN)
+			$(call compile,$(PATH_TRUNK_TCMALLOC), "-DNO_INSTRUMENT"); \;
+			cd $(PATH_ROOT); \
+			$(call createTcmallocWrapper,$(PATH_TRUNK_TCMALLOC))
 
 
 compileAio:
-			$(call compile, $(PATH_AIO), "-DNO_INSTRUMENT")
+			$(call compile,$(PATH_AIO), "-DNO_INSTRUMENT")
 
 
 compileAioNoFalseSharing:
-			$(call compile, $(PATH_AIO_NO_FALSE_SHARING), "-DNO_INSTRUMENT -DNO_FALSE_SHARING")
+			$(call compile,$(PATH_AIO_NO_FALSE_SHARING), "-DNO_INSTRUMENT -DNO_FALSE_SHARING")
 
 
 compileAioNoFalseSharingTcmalloc:
-			$(call compile, $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC), "-DNO_INSTRUMENT -DNO_FALSE_SHARING"); \
-			mv $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN) $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN)_payloadBin ;\
-			cat srcTool/templateWrapRemapperExec > $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN)
+			$(call compile,$(PATH_AIO_NO_FALSE_SHARING_TCMALLOC), "-DNO_INSTRUMENT -DNO_FALSE_SHARING"); \
+			cd $(PATH_ROOT); \
+			$(call createTcmallocWrapper,$(PATH_AIO_NO_FALSE_SHARING_TCMALLOC))
 
 
 compileTrunkScorep:
-			$(call compileScorep, $(PATH_TRUNK))
+			$(call compileScorep,$(PATH_TRUNK))
 
 
 compileTrunkTcmallocScorep:
-			$(call compileScorep, $(PATH_TRUNK_TCMALLOC)); \
-			mv $(PATH_TRUNK_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN) $(PATH_TRUNK_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN)_payloadBin ;\
-			cat srcTool/templateWrapRemapperExec > $(PATH_TRUNK_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN)
+			$(call compileScorep,$(PATH_TRUNK_TCMALLOC)); \
+			$(call createTcmallocWrapper,$(PATH_TRUNK_TCMALLOC))
 
 
 compileAioScorep:
-			$(call compileScorep, $(PATH_AIO))
+			$(call compileScorep,$(PATH_AIO))
 
 
 compileAioNoFalseSharingScorep:
-			$(call compileScorep, $(PATH_AIO_NO_FALSE_SHARING), "-DNO_FALSE_SHARING")
-
+			$(call compileScorep,$(PATH_AIO_NO_FALSE_SHARING), "-DNO_FALSE_SHARING")
 
 compileAioNoFalseSharingTcmallocScorep:
-			$(call compileScorep, $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC), "-DNO_FALSE_SHARING"); \
-			mv $(PATH_TRUNK_TCMALLOC)_install/bin/cube_remap2 $(PATH_TRUNK_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN) ;\
-			cat srcTool/templateWrapRemapperExec > $(PATH_TRUNK_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN); \
+			$(call compileScorep,$(PATH_AIO_NO_FALSE_SHARING_TCMALLOC), "-DNO_FALSE_SHARING"); \
+			$(call createTcmallocWrapper,$(PATH_AIO_NO_FALSE_SHARING_TCMALLOC))
 
 
 checkTrunk:		compileTrunk
-			$(call check, $(PATH_TRUNK))
+			$(call check,$(PATH_TRUNK))
 
 
 checkTrunkTcmalloc:		compileTrunkTcmalloc
-			$(call check, $(PATH_TRUNK_TCMALLOC))
+			$(call check,$(PATH_TRUNK_TCMALLOC))
 
 
 checkAio:		compileAio
-			$(call check, $(PATH_AIO))
+			$(call check,$(PATH_AIO))
 
 
 checkAioNoFalseSharing:		compileAioNoFalseSharing
-			$(call check, $(PATH_AIO_NO_FALSE_SHARING))
+			$(call check,$(PATH_AIO_NO_FALSE_SHARING))
 
 
 checkAioNoFalseSharingTcmalloc:		compileAioNoFalseSharingTcmalloc
-			$(call check, $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC))
+			$(call check,$(PATH_AIO_NO_FALSE_SHARING_TCMALLOC))
 
 
 printRemapperTimeTrunk:
-			$(call remapperTime, $(PATH_TRUNK))
+			$(call remapperTime,$(PATH_TRUNK))
 
 
 printRemapperTimeTrunkTcmalloc:
-			$(call remapperTime, $(PATH_TRUNK_TCMALLOC))
+			$(call remapperTime,$(PATH_TRUNK_TCMALLOC))
 
 
 printRemapperTimeAio:
-			$(call remapperTime, $(PATH_AIO))
+			$(call remapperTime,$(PATH_AIO))
 
 
 printRemapperTimeAioNoFalseSharing:
-			$(call remapperTime, $(PATH_AIO_NO_FALSE_SHARING))
+			$(call remapperTime,$(PATH_AIO_NO_FALSE_SHARING))
 
 
 printRemapperTimeAioNoFalseSharingTcmalloc:
-			$(call remapperTime, $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC))
+			$(call remapperTime,$(PATH_AIO_NO_FALSE_SHARING_TCMALLOC))
 
 
 preCommitTrunk:
-			$(call preCommit, $(PATH_TRUNK))
+			$(call preCommit,$(PATH_TRUNK))
 
 
 preCommitAio:
-			$(call preCommit, $(PATH_AIO))
+			$(call preCommit,$(PATH_AIO))
 
 
 preCommitAioNoFalseSharing:
-			$(call preCommit, $(PATH_AIO_NO_FALSE_SHARING))
+			$(call preCommit,$(PATH_AIO_NO_FALSE_SHARING))
 
 
 preCommitAioNoFalseSharingTcmalloc:
-			$(call preCommit, $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC))
+			$(call preCommit,$(PATH_AIO_NO_FALSE_SHARING_TCMALLOC))
 
 
 #-----------------------------------------------------------------------------------------------------------
@@ -271,7 +278,7 @@ pthreadWrapper.so:
 #-----------------------------------------------------------------------------------------------------------
 #---------------------------------------- Experimentation Methodes -----------------------------------------
 #-----------------------------------------------------------------------------------------------------------
-runAllBenchmark:	compileTrunkScorep compileAioScorep compileAioNoFalseSharingScorep
+runAllBenchmark:	compileTrunkScorep compileTrunkTcmallocScorep compileAioNoFalseSharingTcmallocScorep compileAioScorep compileAioNoFalseSharingScorep  
 			jube run benchmarkInstrumentation.xml --only-bench init_outputFile; \
 			jube run benchmarkInstrumentation.xml --only-bench run_benchmark;
 
