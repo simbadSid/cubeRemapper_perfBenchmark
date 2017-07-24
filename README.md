@@ -5,8 +5,8 @@ For more details on this project or the cube remapper custom implementation, ple
 
 ## Prerequisite
 Before installing or running any of the cited projects, one must insure that the following tools are installed:
-  1. [Score-P](http://www.vi-hps.org/projects/score-p/)(see the INSTALL file within this project).  The "orphaned pthreads" version needs to be used.</br>
-  2. [Cube](http://www.scalasca.org/software/cube-4.x/download.html) (see the INSTALL file within this project).  We will re install different version of it.   But this basic version is required for internal profiling needs.</br>
+  1. [Score-P](http://www.vi-hps.org/projects/score-p/)(see the INSTALL file within the Score-P project).  The "orphaned pthreads" version needs to be used.</br>
+  2. [Cube](http://www.scalasca.org/software/cube-4.x/download.html) (see the INSTALL file within Cube project).  We will re install different version of it.   But this basic version is required for internal profiling needs.</br>
   3. [JUBE](http://www.fz-juelich.de/ias/jsc/EN/Expertise/Support/Software/JUBE/JUBE2/_node.html)</br>
   4. [PAPI](http://icl.cs.utk.edu/papi/index.html) </br>
 
@@ -29,7 +29,7 @@ Then the results might be ploted through different graphical representations usi
 >make plotPointCompare </br>
 >make plotPoint </br>
 
-To plot some previous performance results (obtaines on the HPC Intel Xeon CPU E5-2680 v3 @ 2.50GHz), you can run the command </br>
+To plot some previous performance results (obtained on an HPC Intel Xeon CPU E5-2680 v3 @ 2.50GHz), you can run the command </br>
 >make plotPointCompareArchive
 
 An HMI will allow you to choose among different archives that we obtained.

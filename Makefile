@@ -263,12 +263,12 @@ plotPointCompareArchive:
 #-----------------------------------------------------------------------------------------------------------
 #---------------------------------------- General Methodes -------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------
-.PHONY:		cleanJube 
+.PHONY:		cleanJube clean
 
 
 cleanJube:
 			rm -rf bench_run jube-parse.log
 
-clean:
+clean: cleanTrunk cleanAio cleanAioNoFalseSharing cleanAioNoFalseSharingCustomAlloc cleanJube
 			rm $(BIN_DIR)*
 
