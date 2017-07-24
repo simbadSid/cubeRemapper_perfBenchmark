@@ -1,8 +1,20 @@
 #!/bin/bash
 
 
+if [ $LIB_TCMALLOC == "" ]
+then
+	echo "+++++++++++++++++++++++++++++++++++++++++++++++"
+	echo "The TcMalloc library can not be found"
+	echo "Please install it and set the environment variable LIB_TCMALLOC to <path to TcMalloc>/.libs/libtcmalloc.so"
+	echo "+++++++++++++++++++++++++++++++++++++++++++++++"
+	exit
+fi
+
 
 export LD_PRELOAD=$LIB_TCMALLOC
 shift
-./cube_remap2 $@
+./cube_remap2_payloadBin $@
 export LD_PRELOAD=""
+
+
+

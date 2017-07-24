@@ -34,11 +34,13 @@ SRC_DIR_PTHREAD_WRAPPER					= srcPthreadWrapper/
 BIN_DIR									= bin/
 
 PATH_TRUNK								= ../DEV-SL-trunk
+PATH_TRUNK_TC_MALLOC					= ../DEV-SL-trunk-tcmalloc
 PATH_AIO								= ../DEV-SL-AIO
 PATH_AIO_NO_FALSE_SHARING				= ../DEV-SL-AIO-noFalseSharing
-PATH_AIO_NO_FALSE_SHARING_CUSTOM_ALLOC	= ../DEV-SL-AIO-noFalseSharing-customAlloc
+PATH_AIO_NO_FALSE_SHARING_TCMALLOC		= ../DEV-SL-AIO-noFalseSharing-tcmalloc
 PATH_STATISTIC							= resource/statistic
 PATH_STATISTIC_ARCHIVE					= resource/statistic_archive
+PATH_CUBE_RAMAPPER_BIN					= _install/bin/cube_remap2
 
 NB_CORES								= 22
 CUBE_INPUT_SIZE							= 128
@@ -117,6 +119,10 @@ preCompileTrunk:
 			$(call preCompile, $(PATH_TRUNK))
 
 
+preCompileTrunkTcmalloc:
+			$(call preCompile, $(PATH_TRUNK_TCMALLOC))
+
+
 preCompileAio:
 			$(call preCompile, $(PATH_AIO))
 
@@ -125,12 +131,16 @@ preCompileAioNoFalseSharing:
 			$(call preCompile, $(PATH_AIO_NO_FALSE_SHARING))
 
 
-preCompileAioNoFalseSharingCustomAlloc:
-			$(call preCompile, $(PATH_AIO_NO_FALSE_SHARING_CUSTOM_ALLOC))
+preCompileAioNoFalseSharingTcmalloc:
+			$(call preCompile, $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC))
 
 
 cleanTrunk:
 			$(call clean, $(PATH_TRUNK))
+
+
+cleanTrunkTcmalloc:
+			$(call clean, $(PATH_TRUNK_TCMALLOC))
 
 
 cleanAio:
@@ -141,12 +151,18 @@ cleanAioNoFalseSharing:
 			$(call clean, $(PATH_AIO_NO_FALSE_SHARING))
 
 
-cleanAioNoFalseSharingCustomAlloc:
-			$(call clean, $(PATH_AIO_NO_FALSE_SHARING_CUSTOM_ALLOC))
+cleanAioNoFalseSharingTcmalloc:
+			$(call clean, $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC))
 
 
 compileTrunk:
 			$(call compile, $(PATH_TRUNK), "-DNO_INSTRUMENT")
+
+
+compileTrunkTcmalloc:
+			$(call compile, $(PATH_TRUNK_TCMALLOC), "-DNO_INSTRUMENT"); \
+			mv $(PATH_TRUNK_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN) $(PATH_TRUNK_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN)_payloadBin ;\
+			cat srcTool/templateWrapRemapperExec > $(PATH_TRUNK_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN)
 
 
 compileAio:
@@ -157,14 +173,20 @@ compileAioNoFalseSharing:
 			$(call compile, $(PATH_AIO_NO_FALSE_SHARING), "-DNO_INSTRUMENT -DNO_FALSE_SHARING")
 
 
-compileAioNoFalseSharingCustomAlloc:
-			$(call compile, $(PATH_AIO_NO_FALSE_SHARING_CUSTOM_ALLOC), "-DNO_INSTRUMENT -DNO_FALSE_SHARING"); \
-			mv $(PATH_AIO_NO_FALSE_SHARING_CUSTOM_ALLOC)_install/bin/cube_remap2 $(PATH_AIO_NO_FALSE_SHARING_CUSTOM_ALLOC)_install/bin/cube_remap2_main ;\
-			cat srcTool/templateWrapRemapperExec > $(PATH_AIO_NO_FALSE_SHARING_CUSTOM_ALLOC)_insta
+compileAioNoFalseSharingTcmalloc:
+			$(call compile, $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC), "-DNO_INSTRUMENT -DNO_FALSE_SHARING"); \
+			mv $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN) $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN)_payloadBin ;\
+			cat srcTool/templateWrapRemapperExec > $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN)
 
 
 compileTrunkScorep:
 			$(call compileScorep, $(PATH_TRUNK))
+
+
+compileTrunkTcmallocScorep:
+			$(call compileScorep, $(PATH_TRUNK_TCMALLOC)); \
+			mv $(PATH_TRUNK_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN) $(PATH_TRUNK_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN)_payloadBin ;\
+			cat srcTool/templateWrapRemapperExec > $(PATH_TRUNK_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN)
 
 
 compileAioScorep:
@@ -175,14 +197,18 @@ compileAioNoFalseSharingScorep:
 			$(call compileScorep, $(PATH_AIO_NO_FALSE_SHARING), "-DNO_FALSE_SHARING")
 
 
-compileAioNoFalseSharingCustomAllocScorep:
-			$(call compileScorep, $(PATH_AIO_NO_FALSE_SHARING_CUSTOM_ALLOC), "-DNO_FALSE_SHARING"); \
-			mv $(PATH_AIO_NO_FALSE_SHARING_CUSTOM_ALLOC)_install/bin/cube_remap2 $(PATH_AIO_NO_FALSE_SHARING_CUSTOM_ALLOC)_install/bin/cube_remap2_main ;\
-			cat srcTool/templateWrapRemapperExec > $(PATH_AIO_NO_FALSE_SHARING_CUSTOM_ALLOC)_install/bin/cube_remap2_main; \
+compileAioNoFalseSharingTcmallocScorep:
+			$(call compileScorep, $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC), "-DNO_FALSE_SHARING"); \
+			mv $(PATH_TRUNK_TCMALLOC)_install/bin/cube_remap2 $(PATH_TRUNK_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN) ;\
+			cat srcTool/templateWrapRemapperExec > $(PATH_TRUNK_TCMALLOC)$(PATH_CUBE_RAMAPPER_BIN); \
 
 
 checkTrunk:		compileTrunk
 			$(call check, $(PATH_TRUNK))
+
+
+checkTrunkTcmalloc:		compileTrunkTcmalloc
+			$(call check, $(PATH_TRUNK_TCMALLOC))
 
 
 checkAio:		compileAio
@@ -193,12 +219,16 @@ checkAioNoFalseSharing:		compileAioNoFalseSharing
 			$(call check, $(PATH_AIO_NO_FALSE_SHARING))
 
 
-checkAioNoFalseSharingCustomAlloc:		compileAioNoFalseSharingCustomAlloc
-			$(call check, $(PATH_AIO_NO_FALSE_SHARING_CUSTOM_ALLOC))
+checkAioNoFalseSharingTcmalloc:		compileAioNoFalseSharingTcmalloc
+			$(call check, $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC))
 
 
 printRemapperTimeTrunk:
 			$(call remapperTime, $(PATH_TRUNK))
+
+
+printRemapperTimeTrunkTcmalloc:
+			$(call remapperTime, $(PATH_TRUNK_TCMALLOC))
 
 
 printRemapperTimeAio:
@@ -209,8 +239,8 @@ printRemapperTimeAioNoFalseSharing:
 			$(call remapperTime, $(PATH_AIO_NO_FALSE_SHARING))
 
 
-printRemapperTimeAioNoFalseSharingCustomAlloc:
-			$(call remapperTime, $(PATH_AIO_NO_FALSE_SHARING_CUSTOM_ALLOC))
+printRemapperTimeAioNoFalseSharingTcmalloc:
+			$(call remapperTime, $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC))
 
 
 preCommitTrunk:
@@ -225,8 +255,8 @@ preCommitAioNoFalseSharing:
 			$(call preCommit, $(PATH_AIO_NO_FALSE_SHARING))
 
 
-preCommitAioNoFalseSharingCustomAlloc:
-			$(call preCommit, $(PATH_AIO_NO_FALSE_SHARING_CUSTOM_ALLOC))
+preCommitAioNoFalseSharingTcmalloc:
+			$(call preCommit, $(PATH_AIO_NO_FALSE_SHARING_TCMALLOC))
 
 
 #-----------------------------------------------------------------------------------------------------------
@@ -269,6 +299,6 @@ plotPointCompareArchive:
 cleanJube:
 			rm -rf bench_run jube-parse.log
 
-clean: cleanTrunk cleanAio cleanAioNoFalseSharing cleanAioNoFalseSharingCustomAlloc cleanJube
+clean: cleanTrunk cleanAio cleanAioNoFalseSharing cleanAioNoFalseSharingTcmalloc cleanJube
 			rm $(BIN_DIR)*
 
