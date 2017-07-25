@@ -107,7 +107,7 @@ define remapperTime
 	cd $(1); \
 	cd _build; \
 	rm -rf scorep-*; \
-	_install/bin/cube_remap2 $(2) -r ../examples/tools/ReMap2/remapping.spec -d -o ../OUTPUT_ASSYNCHRONOUS.cubex ../../$(CUBE_INPUT_FILE); \
+	_install/bin/cube_remap2 -r ../examples/tools/ReMap2/remapping.spec -d -o ../OUTPUT_ASSYNCHRONOUS.cubex ../../$(CUBE_INPUT_FILE); \
 	rm ../OUTPUT_ASSYNCHRONOUS.cubex; \
 	cube_dump scorep-*/profile.cubex -m time -z incl
 endef
@@ -279,6 +279,7 @@ checkAioNoFalseSharingTcmalloc:		compileAioNoFalseSharingTcmalloc
 			$(call check,$(PATH_AIO_NO_FALSE_SHARING_TCMALLOC))
 
 
+
 checkAioPthreadWrap:		compileAioPthreadWrap
 			$(call check,$(PATH_AIO_PTHREAD_WRAP))
 
@@ -307,7 +308,8 @@ printRemapperTimeAioNoFalseSharingTcmalloc:
 
 
 printRemapperTimeAioPthreadWrap:
-			$(call remapperTime,$(PATH_AIO_PTHREAD_WRAP),4)
+			export PTHREAD_WRAPPER_CORE_SHIFT=4; \
+			$(call remapperTime,$(PATH_AIO_PTHREAD_WRAP))
 
 
 ## -------------------------------
