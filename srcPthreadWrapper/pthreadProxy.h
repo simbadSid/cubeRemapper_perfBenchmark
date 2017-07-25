@@ -24,8 +24,9 @@
 // -----------------------------
 // Global methods
 // -----------------------------
-int proxy_pthread_create(pthread_t *pt, const pthread_attr_t *pthreadAttr, void *(*func)(void *), void *funcAttr);
-int proxy_pthread_setaffinity_np(pthread_t thread, size_t cpusetsize, const cpu_set_t *cpuset);
+int			proxy_pthread_create			(pthread_t *pt, const pthread_attr_t *pthreadAttr, void *(*func)(void *), void *funcAttr);
+int			proxy_pthread_setaffinity_np	(pthread_t thread, size_t cpusetsize, const cpu_set_t *cpuset);
+pthread_t	proxy_pthread_self				();
 
 
 

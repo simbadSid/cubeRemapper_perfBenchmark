@@ -1,0 +1,40 @@
+
+
+
+# This script must be prepended by the shabang and the values of
+#      - REMAPPER_BIN_TARGET (absolute path)
+#      - LIB_PTHREAD_WRAPPER (absolute path)
+
+#This script assumes that the environment variable PTHREAD_WRAPPER_CORE_SHIFT is set to an int in [1, NB_CORES]
+
+
+
+
+if [ $REMAPPER_BIN_TARGET == "" ] || [ $LIB_PTHREAD_WRAPPER == "" ]
+then
+	echo "+++++++++++++++++++++++++++++++++++++++++++++++"
+	echo "The current script has not correctly been initialized from the template"
+	echo "Please pre-pend the shabang and the values of"
+	echo "      - REMAPPER_BIN_TARGET (absolute path)"
+	echo "      - LIB_PTHREAD_WRAPPER (absolute path)"
+	echo "+++++++++++++++++++++++++++++++++++++++++++++++"
+	exit
+fi
+
+if [ $PTHREAD_WRAPPER_CORE_SHIFT == "" ] || [ $PTHREAD_WRAPPER_CORE_SHIFT != ~ ^[0-9]+$ ]
+then
+	echo "+++++++++++++++++++++++++++++++++++++++++++++++"
+	echo "%(0) requires the environment variable PTHREAD_WRAPPER_CORE_SHIFT to be set to an int in [1, NB_CORES]"
+	echo "+++++++++++++++++++++++++++++++++++++++++++++++"
+	exit
+fi
+shift
+
+
+export LD_PRELOAD="${LIB_PTHREAD_WRAPPER}_${CORE_SHIFT}"
+# The following TARGET will be replaced by the path to the remapper binary
+${REMAPPER_BIN_TARGET} $@
+export LD_PRELOAD=""
+
+
+

@@ -160,6 +160,7 @@ def parsePlotType(plotType, data):
 
     return (plotTypeId, dimProjectionName, dimProjectionListValue)
 
+
 def plotModel(ax):
     writeTime   = 1.45
     n           = 4
@@ -310,7 +311,7 @@ def plotData_projection(data, plotType, dimProjectionName, dimProjectionListValu
             (X_list_cmp, Z_list_cmp, Z_error_list_cmp, X_label_list_cmp) = dataCompare.getVariableDimVect_projection(dimProjectionName, dimProjectionValue)
             assert(len(X_list_cmp) == len(X_label_list_cmp))
             assert(X_label_list == X_label_list_cmp)
-#TODO            shift = float(min((X_list_cmp[0][1] - X_list_cmp[0][0]), (X_list[0][1] - X_list[0][0])))/3
+#            shift = float(min((X_list_cmp[0][1] - X_list_cmp[0][0]), (X_list[0][1] - X_list[0][0])))/3
         transparency=1.
         if (allProjectionIn1Frame):
             resultName  = dimProjectionName + "(" + str(dimProjectionValue) + ")"
