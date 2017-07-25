@@ -71,6 +71,7 @@ PLOT_TYPE_POINT                     = "point"
 COLOR_DEFAULT                       = 'magenta'
 COLOR_LIST                          = ['green',                'black',                    'red',                               'purple',                               'blue',                                     'red',          'blue',                     'black',        'green',                    'purple']
 COLOR_CORRESPONDENCE                = ['./posixGlibcIO_sleep', './posixGlibcAIO_sleep',    './posixGlibcAIO_sleep_noSignal',    './posixGlibcIO_sleep_memoryFootprint', './posixGlibcAIO_sleep_memoryFootprint',    'DEV-SL-trunk', 'DEV-SL-trunk-tcmalloc',    'DEV-SL-AIO',   'DEV-SL-AIO-noFalseSharing','DEV-SL-AIO-noFalseSharing-tcmallocs']
+
 POINT_TYPE_LIST                     = ['p',     'x',        'o',                    '<',                        '^',                     '*', 'D', 'x', '|', 'H']
 POINT_TYPE_CORRESPONDENCE           = ['Total', 'Compute',  'Compute is row wise',  'Compute[get_sevs_raw]',    'Compute[set_sevs_raw]', 'Write']
 
