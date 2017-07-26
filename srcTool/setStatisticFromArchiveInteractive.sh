@@ -7,9 +7,9 @@ PATH_STATISTIC_ARCHIVE=${2}
 dateAndTime=`date | tr \  _ | tr \: -`
 BACKUP_FILE="z_backup_${dateAndTime}.tar"
 
-HEIGHT=15
+HEIGHT=25
 WIDTH=100
-CHOICE_HEIGHT=4
+CHOICE_HEIGHT=15
 BACKTITLE="Backtitle here"
 TITLE="Title here"
 MENU="Choose one of the following options:"

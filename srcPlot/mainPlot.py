@@ -69,8 +69,8 @@ PLOT_TYPE_BAR                       = "bar"
 PLOT_TYPE_POINT                     = "point"
 
 COLOR_DEFAULT                       = 'magenta'
-COLOR_LIST                          = ['green',                'black',                    'red',                               'purple',                               'blue',                                     'red',          'blue',                     'black',        'green',                    'purple']
-COLOR_CORRESPONDENCE                = ['./posixGlibcIO_sleep', './posixGlibcAIO_sleep',    './posixGlibcAIO_sleep_noSignal',    './posixGlibcIO_sleep_memoryFootprint', './posixGlibcAIO_sleep_memoryFootprint',    'DEV-SL-trunk', 'DEV-SL-trunk-tcmalloc',    'DEV-SL-AIO',   'DEV-SL-AIO-noFalseSharing','DEV-SL-AIO-noFalseSharing-tcmallocs']
+COLOR_LIST                          = ['green',                'black',                    'red',                               'purple',                               'blue',                                     'red',          'blue',                     'black',        'green',                    'purple',                              'black']
+COLOR_CORRESPONDENCE                = ['./posixGlibcIO_sleep', './posixGlibcAIO_sleep',    './posixGlibcAIO_sleep_noSignal',    './posixGlibcIO_sleep_memoryFootprint', './posixGlibcAIO_sleep_memoryFootprint',    'DEV-SL-trunk', 'DEV-SL-trunk-tcmalloc',    'DEV-SL-AIO',   'DEV-SL-AIO-noFalseSharing','DEV-SL-AIO-noFalseSharing-tcmallocs', 'DEV-SL-AIO-pthreadWrap']
 
 POINT_TYPE_LIST                     = ['p',     'x',        'o',                    '<',                        '^',                     '*', 'D', 'x', '|', 'H']
 POINT_TYPE_CORRESPONDENCE           = ['Total', 'Compute',  'Compute is row wise',  'Compute[get_sevs_raw]',    'Compute[set_sevs_raw]', 'Write']
@@ -331,12 +331,12 @@ def plotData_projection(data, plotType, dimProjectionName, dimProjectionListValu
 #                    plotBar([x + shift for x in X_list_cmp[0]], Z_cmp, Z_cmp_error, fig, ax, X_label_list_cmp[0], resultDimText, dataCompare.getBenchmarkPatternInfo(), BAR_SIZE, logX, logY, legendExtra=resultName, transparency=transparency, generateRandomColor=allProjectionIn1Frame)
                     plotBar([x for x in X_list_cmp[0]], Z_cmp, Z_cmp_error, fig, ax, X_label_list_cmp[0], resultDimText, dataCompare.getBenchmarkPatternInfo(), BAR_SIZE, logX, logY, legendExtra=resultName, transparency=transparency, generateRandomColor=allProjectionIn1Frame)
             elif (plotType == PLOT_TYPE_POINT):
-                plotPoint(X_list[0], Z, Z_error, fig, ax, X_label_list[0], resultDimText, data.getBenchmarkPatternInfo(), BAR_SIZE, logX, logY, legendExtra=resultName, pointType=pointType, generateRandomColor=allProjectionIn1Frame)
+                plotPoint(X_list[0], Z, Z_error, fig, ax, X_label_list[0], resultDimText, data.getBenchmarkPatternInfo(), BAR_SIZE, logX, logY, legendExtra=resultName, pointType=pointType)#, generateRandomColor=allProjectionIn1Frame)
                 pointType = (pointType + 1) % len(POINT_TYPE_LIST)
                 if (dataCompare != None):
                     Z_cmp       = Z_list_cmp[resultId]
                     Z_cmp_error = Z_error_list_cmp[resultId]
-                    plotPoint(X_list_cmp[0], Z_cmp, Z_cmp_error, fig, ax, X_label_list_cmp[0], resultDimText, dataCompare.getBenchmarkPatternInfo(), BAR_SIZE, logX, logY, legendExtra=resultName, pointType=pointType, generateRandomColor=allProjectionIn1Frame)
+                    plotPoint(X_list_cmp[0], Z_cmp, Z_cmp_error, fig, ax, X_label_list_cmp[0], resultDimText, dataCompare.getBenchmarkPatternInfo(), BAR_SIZE, logX, logY, legendExtra=resultName, pointType=pointType)#, generateRandomColor=allProjectionIn1Frame)
                     pointType = (pointType + 1) % len(POINT_TYPE_LIST)
             else:
                 loggerError("Unknown 2d plot type", param=plotType, exitNow=True)
