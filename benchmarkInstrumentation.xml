@@ -138,7 +138,7 @@
 				do
 					for file in `ls $HACK_PATH${filePathStatistic}${cube_metric}`;
 					do
-						python $HACK_PATH${fileScriptPlot} $HACK_PATH${filePathStatistic}${cube_metric}/${file} -multipleTry -plotType=point:nbIoDevice:all -sortDim=fileSize -resultDimText=${cube_metric}
+						python $HACK_PATH${fileScriptPlot} $HACK_PATH${filePathStatistic}${cube_metric}/${file} -multipleTry -plotType=point:nbIoDevice:all -sortDim=fileSize -resultDimText=${cube_metric} -allDataIn1Frame
 					done;
 				done;
 			</do>
@@ -158,7 +158,7 @@
 			<do>cubeMetricList=( ${papiMetricListTot} ); \
 				for cube_metric in "${cubeMetricList[@]}";
 				do
-					python $HACK_PATH${fileScriptPlot} $HACK_PATH${filePathStatistic}${cube_metric}/*.data -multipleTry -plotType=point:nbIoDevice:all -sortDim=fileSize -resultDimText=${cube_metric}
+					python $HACK_PATH${fileScriptPlot} $HACK_PATH${filePathStatistic}${cube_metric}/*.data -multipleTry -plotType=point:nbIoDevice:all -sortDim=fileSize -resultDimText=${cube_metric} -allDataIn1Frame
 				done;
 			</do>
 		</step>
