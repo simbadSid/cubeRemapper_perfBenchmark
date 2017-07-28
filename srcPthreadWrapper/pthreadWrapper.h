@@ -23,7 +23,8 @@
 
 
 
-#define DEFAULT_NB_CPU	4
+#define DEFAULT_NB_CPU		4
+#define DEFAULT_CORE_SHIFT	1
 
 
 

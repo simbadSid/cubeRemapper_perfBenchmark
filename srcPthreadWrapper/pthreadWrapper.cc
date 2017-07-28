@@ -23,6 +23,7 @@
 static unsigned char	initialized			= 0;
 static unsigned int		nbCpu				= 0;
 static unsigned int		nbThreadCreation	= 0;
+static unsigned int		coreShift			= 0;
 
 
 // -----------------------------
@@ -41,13 +42,20 @@ int pthread_create(pthread_t *pt, const pthread_attr_t *pthreadAttr, void *(*fun
 	{
 		printf("----> Pthread (wrapper) initialization\n");
 		initialized	= 1;
-#ifdef NB_CPU
-		nbCpu		= NB_CPU;
+#ifdef NB_CORES
+		nbCpu		= NB_CORES;
 #else
 		nbCpu		= DEFAULT_NB_CPU;
 #endif
+
+#ifdef CORE_SHIFT
+		coreShift	= CORE_SHIFT;
+#else
+		coreShift	= DEFAULT_CORE_SHIFT;
+#endif
+
 		// Pin the current thread to core 0
-		pthread_t ptCurrent = pthread_self();
+		pthread_t ptCurrent = proxy_pthread_self();
 		CPU_ZERO(&cpuset);
 		CPU_SET(0, &cpuset);
 		int rc = proxy_pthread_setaffinity_np(ptCurrent, sizeof(cpu_set_t), &cpuset);

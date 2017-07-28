@@ -1,8 +1,0 @@
-#!/bin/bash
-
-
-
-export LD_PRELOAD=$LIB_TCMALLOC
-shift
-./cube_remap2 $@
-export LD_PRELOAD=""
