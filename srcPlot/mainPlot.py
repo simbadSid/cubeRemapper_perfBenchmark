@@ -15,6 +15,10 @@
 
 
 import matplotlib as mpl
+font = {'family' : 'normal',
+        'weight' : 'normal',
+        'size'   : 27}
+mpl.rc('font', **font)
 PLOT_LIB_LIST = ['TkAgg', 'GtkAgg', 'Agg']
 for lib in PLOT_LIB_LIST:
     try:
@@ -62,14 +66,14 @@ PLOT_TYPE_BAR                       = "bar"
 PLOT_TYPE_POINT                     = "point"
 
 COLOR_DEFAULT                       = 'magenta'
-COLOR_LIST                          = ['green',                'black',                    'red',                               'purple',                               'blue',                                     'red',          'blue',                     'black',        'green',                    'purple',                              'black']
-COLOR_CORRESPONDENCE                = ['./posixGlibcIO_sleep', './posixGlibcAIO_sleep',    './posixGlibcAIO_sleep_noSignal',    './posixGlibcIO_sleep_memoryFootprint', './posixGlibcAIO_sleep_memoryFootprint',    'DEV-SL-trunk', 'DEV-SL-trunk-tcmalloc',    'DEV-SL-AIO',   'DEV-SL-AIO-noFalseSharing','DEV-SL-AIO-noFalseSharing-tcmallocs', 'DEV-SL-AIO-pthreadWrap']
+COLOR_LIST                          = ['green',                'black',                    'red',                               'purple',                               'blue',                                     'black',        'blue',                     'red',          'red',                     'green',                    'purple',                              'black']
+COLOR_CORRESPONDENCE                = ['./posixGlibcIO_sleep', './posixGlibcAIO_sleep',    './posixGlibcAIO_sleep_noSignal',    './posixGlibcIO_sleep_memoryFootprint', './posixGlibcAIO_sleep_memoryFootprint',    'DEV-SL-trunk', 'DEV-SL-trunk-tcmalloc',    'DEV-SL-AIO',   'DEV-SL-AIO-pinnedThread', 'DEV-SL-AIO-noFalseSharing','DEV-SL-AIO-noFalseSharing-tcmallocs', 'DEV-SL-AIO-pthreadWrap']
 
 POINT_TYPE_LIST                     = ['p',     'x',        'o',                    '<',                        '^',                     '*', 'D', 'x', '|', 'H']
 POINT_TYPE_CORRESPONDENCE           = ['Total', 'Compute',  'Compute is row wise',  'Compute[get_sevs_raw]',    'Compute[set_sevs_raw]', 'Write']
 
-LABEL_LIST_FENCY                    = ["File size (Bytes)", "Time (s)",  "#L1 (total) cache miss",  "#L2 (total) cache miss","#L3 (total) cache miss","State-of-the-art", "Asynchronous I/O", "Asynchronous I/O - no \"false sharing\"",  "Asynchronous I/O (TcMalloc)- no \"false sharing\""]
-LABEL_LIST_FENCY_CORRESPONDANCE     = ["fileSize",          "time",      "PAPI_L1_TCM",             "PAPI_L2_TCM",           "PAPI_L3_TCM",           "DEV-SL-trunk",     "DEV-SL-AIO",       "DEV-SL-AIO-noFalseSharing",                "DEV-SL-AIO-noFalseSharing-tcmalloc"]
+LABEL_LIST_FENCY                    = ["File size (Bytes)", "Time (s)",  "#L1 (total) cache miss",  "#L2 (total) cache miss","#L3 (total) cache miss","State-of-the-art", "Asynchronous I/O", "Asynchronous I/O (pinned thread)", "Asynchronous I/O - no \"false sharing\"",  "Asynchronous I/O - no \"false sharing\"(Custom Mem Alloc)",  "Asynchronous I/O - no \"false sharing\"(Custom Mem Alloc)"]
+LABEL_LIST_FENCY_CORRESPONDANCE     = ["fileSize",          "time",      "PAPI_L1_TCM",             "PAPI_L2_TCM",           "PAPI_L3_TCM",           "DEV-SL-trunk",     "DEV-SL-AIO",       "DEV-SL-AIO-pinnedThread",          "DEV-SL-AIO-noFalseSharing",                "DEV-SL-AIO-noFalseSharing-customAlloc",                      "DEV-SL-AIO-noFalseSharing-tcmalloc"]
 
 RESULT_DIM_TEXT_DEFAULT             = "Time (s)"
 BAR_SIZE                            = 3
@@ -192,17 +196,19 @@ def projectionPlotHeader(dataLis, dimProjectionName, dimProjectionValue, ax, fig
     ax = plt.subplot(111)
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+#    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 #    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.06),fancybox=True, shadow=True, ncol=3)
     plt.grid()
+    plt.legend(loc=2)  # Put the legend on the left
     plt.show(block=False)
 
 
 def fencyLabel(originalText):
+    print "---------------" + originalText 
     for i in xrange(len(LABEL_LIST_FENCY)):
         if (originalText == LABEL_LIST_FENCY_CORRESPONDANCE[i]):
             return LABEL_LIST_FENCY[i]
-    
+
     return originalText
 
 # ---------------------------------------
@@ -231,7 +237,9 @@ def plotSurface(X, Y, Z, fig, X_label, Y_label, Z_label):
 
 
 def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, logY, legendExtra="", pointType=0, generateRandomColor=False):
-    if (not legendExtra.startswith("Total")):
+#    if (not legendExtra.startswith("Total")):
+#        return
+    if (legend.startswith('Compute time[get_sevs_raw]')):
         return
 
 # TODO to remove
