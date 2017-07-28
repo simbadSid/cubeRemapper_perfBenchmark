@@ -176,10 +176,6 @@ def plotModel_hpc(ax, nbIoDevice=1):
 
 
 def projectionPlotHeader(dataLis, dimProjectionName, dimProjectionValue, ax, fig):
-# TODO Plot the model
-#    plotModel(ax)
-#    plotModel_hpc(ax, nbIoDevice=dimProjectionValue)
-# TODO END
     plt.legend()
     frameTitle = dataLis[0].getBenchmarkPatternInfo()
     for dataCompare in dataLis[1:]:
@@ -190,7 +186,6 @@ def projectionPlotHeader(dataLis, dimProjectionName, dimProjectionValue, ax, fig
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-#    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.06),fancybox=True, shadow=True, ncol=3)
     plt.grid()
     plt.show(block=False)
 
@@ -220,29 +215,6 @@ def plotSurface(X, Y, Z, fig, X_label, Y_label, Z_label):
     ax.set_zlabel(Z_label)
 
 def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, logY, legendExtra="", pointType=0, generateRandomColor=False):
-
-# TODO to remove
-#    if (legend.startswith("./posixGlibcIO") and legendExtra != "computeTime(0.0001)"):
-#        return
-# TODO end to remove
-
-# TODO to remove
-#    if (legendExtra == 'Iterations'):
-#        return
-# TODO end to remove
-
-# TODO to remove
-    """
-    average = 0.0
-    nbVal   = 0
-    for val in Z:
-        average += val
-        nbVal   += 1
-    average = average / nbVal
-    ax.plot([X[0], X[len(X)-1]], [average, average], "--", color='red', label="Average value")
-    """
-# TODO end to remove
-
     pt = findStartWith (legendExtra, POINT_TYPE_CORRESPONDENCE)
     if (pt < 0):
         pointType = POINT_TYPE_LIST[pointType]
@@ -262,7 +234,6 @@ def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, l
     ax.plot(X, Z, "-"+pointType, color=col, label=legend, markersize =7)
 
     if (Z_error != None):
-#        if (legendExtra == 'Compute time'):
         ax.fill_between(X, Z_error[1], Z_error[0], color=col, alpha=0.1)
 
     ax.set_ylabel(Z_label)
@@ -371,16 +342,15 @@ def plotData(dataLis, plotType, logX, logY, allProjectionIn1Frame, resultDimText
 # ---------------------------------------
 if __name__ == "__main__":
     (dataFileName, plotType, logX, logY, resultDimText, allProjectionIn1Frame, allDataIn1Frame, multipleTry, variableDimForSort)  = parseInputArg(sys.argv)
-    dataLis = [Data() for f in dataFileName]
+    dataLis = []
     for i in xrange(len(dataFileName)):
-        print "\t Parsing the data file: " + dataFileName[i]
+        dataLis.append(Data())
         dataLis[i].parseAndSet(dataFileName[i], multipleTry=multipleTry, variableDimForSort=variableDimForSort)
-#        assert (dataLis[i].getNbVariableDim() == 2)
+        print "\t Parsing the data file: " + dataFileName[i]
+        print dataLis[i].toString()
 
     nbFile = len(dataFileName)
     if ((nbFile == 1) or (allDataIn1Frame)):
-#        for data in dataLis:
-#            print data.toString()
         plotData(dataLis, plotType, logX, logY, allProjectionIn1Frame, resultDimText, multipleTry)
     else:
         for i in xrange(nbFile-1):
