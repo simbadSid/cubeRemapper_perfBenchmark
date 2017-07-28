@@ -68,6 +68,9 @@ COLOR_CORRESPONDENCE                = ['./posixGlibcIO_sleep', './posixGlibcAIO_
 POINT_TYPE_LIST                     = ['p',     'x',        'o',                    '<',                        '^',                     '*', 'D', 'x', '|', 'H']
 POINT_TYPE_CORRESPONDENCE           = ['Total', 'Compute',  'Compute is row wise',  'Compute[get_sevs_raw]',    'Compute[set_sevs_raw]', 'Write']
 
+LABEL_LIST_FENCY                    = ["File size (Bytes)", "Time (s)",  "#L1 (total) cache miss",  "#L2 (total) cache miss","#L3 (total) cache miss","State-of-the-art", "Asynchronous I/O", "Asynchronous I/O - no \"false sharing\"",  "Asynchronous I/O (TcMalloc)- no \"false sharing\""]
+LABEL_LIST_FENCY_CORRESPONDANCE     = ["fileSize",          "time",      "PAPI_L1_TCM",             "PAPI_L2_TCM",           "PAPI_L3_TCM",           "DEV-SL-trunk",     "DEV-SL-AIO",       "DEV-SL-AIO-noFalseSharing",                "DEV-SL-AIO-noFalseSharing-tcmalloc"]
+
 RESULT_DIM_TEXT_DEFAULT             = "Time (s)"
 BAR_SIZE                            = 3
 
@@ -176,6 +179,10 @@ def plotModel_hpc(ax, nbIoDevice=1):
 
 
 def projectionPlotHeader(dataLis, dimProjectionName, dimProjectionValue, ax, fig):
+# TODO Plot the model
+#    plotModel(ax)
+#    plotModel_hpc(ax, nbIoDevice=dimProjectionValue)
+# TODO END
     plt.legend()
     frameTitle = dataLis[0].getBenchmarkPatternInfo()
     for dataCompare in dataLis[1:]:
@@ -186,9 +193,17 @@ def projectionPlotHeader(dataLis, dimProjectionName, dimProjectionValue, ax, fig
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+#    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.06),fancybox=True, shadow=True, ncol=3)
     plt.grid()
     plt.show(block=False)
 
+
+def fencyLabel(originalText):
+    for i in xrange(len(LABEL_LIST_FENCY)):
+        if (originalText == LABEL_LIST_FENCY_CORRESPONDANCE[i]):
+            return LABEL_LIST_FENCY[i]
+    
+    return originalText
 
 # ---------------------------------------
 # Plotting methods (per chart page)
@@ -214,7 +229,33 @@ def plotSurface(X, Y, Z, fig, X_label, Y_label, Z_label):
     ax.set_ylabel(Y_label)
     ax.set_zlabel(Z_label)
 
+
 def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, logY, legendExtra="", pointType=0, generateRandomColor=False):
+    if (not legendExtra.startswith("Total")):
+        return
+
+# TODO to remove
+#    if (legend.startswith("./posixGlibcIO") and legendExtra != "computeTime(0.0001)"):
+#        return
+# TODO end to remove
+
+# TODO to remove
+#    if (legendExtra == 'Iterations'):
+#        return
+# TODO end to remove
+
+# TODO to remove
+    """
+    average = 0.0
+    nbVal   = 0
+    for val in Z:
+        average += val
+        nbVal   += 1
+    average = average / nbVal
+    ax.plot([X[0], X[len(X)-1]], [average, average], "--", color='red', label="Average value")
+    """
+# TODO end to remove
+
     pt = findStartWith (legendExtra, POINT_TYPE_CORRESPONDENCE)
     if (pt < 0):
         pointType = POINT_TYPE_LIST[pointType]
@@ -230,12 +271,16 @@ def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, l
         else:
             col = COLOR_LIST[col]
 
-    legend = legend + " (" + legendExtra + ")"
+    legend = fencyLabel(legend)
+#    legend = legend + " (" + legendExtra + ")"
     ax.plot(X, Z, "-"+pointType, color=col, label=legend, markersize =7)
 
     if (Z_error != None):
         ax.fill_between(X, Z_error[1], Z_error[0], color=col, alpha=0.1)
 
+    Z_label = fencyLabel(Z_label)
+    X_label = fencyLabel(X_label)
+    print X_label
     ax.set_ylabel(Z_label)
     ax.set_xlabel(X_label)
     if (logX):
