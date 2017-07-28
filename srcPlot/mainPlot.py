@@ -14,15 +14,6 @@
 ##*************************************************************************##
 
 
-
-
-
-
-
-
-
-
-
 import matplotlib as mpl
 PLOT_LIB_LIST = ['TkAgg', 'GtkAgg', 'Agg']
 for lib in PLOT_LIB_LIST:
@@ -42,7 +33,8 @@ import numpy as np
 import sys
 
 from data import Data
-from util import loggerError, LIST_SEPARATOR, find, generateMappedRandomColor
+from util import loggerError, LIST_SEPARATOR, find, generateMappedRandomColor, findStartWith
+
 
 
 
@@ -61,19 +53,20 @@ ARGUMENT_LOG_Y                      = "-logScaleY"
 ARGUMENT_RESULT_DIM_TEXT            = "-resultDimText="
 ARGUMENT_MULTIPLE_TRY               = "-multipleTry"
 ARGUMENT_ALL_PROJECTION_IN_1_FRAME  = "-allProjectionIn1Frame"
+ARGUMENT_ALL_DATA_IN_1_FRAME        = "-allDataIn1Frame"
 ARGUMENT_SORT_DIM                   = "-sortDim="
-
 
 PLOT_TYPE_SURFACE                   = "surface"
 PLOT_TYPE_CLOUD                     = "cloud"
 PLOT_TYPE_BAR                       = "bar"
 PLOT_TYPE_POINT                     = "point"
 
-COLOR_DEFAULT                       = 'black'
-COLOR_LIST                          = ['green',                'black',                    'red',                               'purple',                               'blue',                                     'red',          'black']
-COLOR_CORRESPONDENCE                = ['./posixGlibcIO_sleep', './posixGlibcAIO_sleep',    './posixGlibcAIO_sleep_noSignal',    './posixGlibcIO_sleep_memoryFootprint', './posixGlibcAIO_sleep_memoryFootprint',    'DEV-SL-trunk', 'DEV-SL-AIO']
-POINT_TYPE_LIST                     = ['p',             'x',            'o',        '<', '^', '*', 'D', 'x', '|', 'H']
-POINT_TYPE_CORRESPONDENCE           = ['Total time',    'Compute time', 'Compute time is row wise', 'Compute time[get_sevs_raw]', 'Compute time[set_sevs_raw]', 'Write time']
+COLOR_DEFAULT                       = 'magenta'
+COLOR_LIST                          = ['green',                'black',                    'red',                               'purple',                               'blue',                                     'red',          'blue',                     'black',        'green',                    'purple',                              'black']
+COLOR_CORRESPONDENCE                = ['./posixGlibcIO_sleep', './posixGlibcAIO_sleep',    './posixGlibcAIO_sleep_noSignal',    './posixGlibcIO_sleep_memoryFootprint', './posixGlibcAIO_sleep_memoryFootprint',    'DEV-SL-trunk', 'DEV-SL-trunk-tcmalloc',    'DEV-SL-AIO',   'DEV-SL-AIO-noFalseSharing','DEV-SL-AIO-noFalseSharing-tcmallocs', 'DEV-SL-AIO-pthreadWrap']
+
+POINT_TYPE_LIST                     = ['p',     'x',        'o',                    '<',                        '^',                     '*', 'D', 'x', '|', 'H']
+POINT_TYPE_CORRESPONDENCE           = ['Total', 'Compute',  'Compute is row wise',  'Compute[get_sevs_raw]',    'Compute[set_sevs_raw]', 'Write']
 
 RESULT_DIM_TEXT_DEFAULT             = "Time (s)"
 BAR_SIZE                            = 3
@@ -96,6 +89,7 @@ def printHelp(progName):
     print "\t"+ ARGUMENT_RESULT_DIM_TEXT            + "<text>\tTo set the text to print as a result dimension"
     print "\t"+ ARGUMENT_SORT_DIM                   + "<variable dim>\tTo sort all the data following to the given variable dimension"
     print "\t"+ ARGUMENT_ALL_PROJECTION_IN_1_FRAME  + "\tTo print all the different projections in a single frame"
+    print "\t"+ ARGUMENT_ALL_DATA_IN_1_FRAME        + "\tTo print all the data in a single frame"
     print "\t"+ ARGUMENT_MULTIPLE_TRY               + "\t\tTo consider the data as average of multpile try (inly available with 2d plots)"
     print "\t"+ ARGUMENT_INPUT_HELP                 + "\t\t\tTo print the current help"
     exit(2)
@@ -107,6 +101,7 @@ def parseInputArg(argList):
     logX                    = False
     logY                    = False
     allProjectionIn1Frame   = False
+    allDataIn1Frame         = False
     multipleTry             = False
     variableDimForSort      = None
     resultDimText           = RESULT_DIM_TEXT_DEFAULT
@@ -122,6 +117,8 @@ def parseInputArg(argList):
             logY = True
         elif (arg == ARGUMENT_ALL_PROJECTION_IN_1_FRAME):
             allProjectionIn1Frame = True
+        elif (arg == ARGUMENT_ALL_DATA_IN_1_FRAME):
+            allDataIn1Frame = True
         elif (arg == ARGUMENT_MULTIPLE_TRY):
             multipleTry = True
         elif (arg.startswith(ARGUMENT_SORT_DIM)):
@@ -136,7 +133,7 @@ def parseInputArg(argList):
     if (len(dataFileName) == 0):
         loggerError("Unspecified data file name", exitNow=True)
 
-    return (dataFileName, plotType, logX, logY, resultDimText, allProjectionIn1Frame, multipleTry, variableDimForSort)
+    return (dataFileName, plotType, logX, logY, resultDimText, allProjectionIn1Frame, allDataIn1Frame, multipleTry, variableDimForSort)
 
 
 def parsePlotType(plotType, data):
@@ -160,6 +157,7 @@ def parsePlotType(plotType, data):
 
     return (plotTypeId, dimProjectionName, dimProjectionListValue)
 
+
 def plotModel(ax):
     writeTime   = 1.45
     n           = 4
@@ -177,14 +175,14 @@ def plotModel_hpc(ax, nbIoDevice=1):
     ax.plot([writeTime/nbIoDevice,  writeTime/nbIoDevice],  [0,                                         200],                               "--", color='purple',label="Write time / nb IO devices") 
 
 
-def projectionPlotHeader(data, dataCompare, dimProjectionName, dimProjectionValue, ax, fig):
+def projectionPlotHeader(dataLis, dimProjectionName, dimProjectionValue, ax, fig):
 # TODO Plot the model
 #    plotModel(ax)
 #    plotModel_hpc(ax, nbIoDevice=dimProjectionValue)
 # TODO END
     plt.legend()
-    frameTitle = data.getBenchmarkPatternInfo()
-    if (dataCompare != None):
+    frameTitle = dataLis[0].getBenchmarkPatternInfo()
+    for dataCompare in dataLis[1:]:
         frameTitle += " VS " + dataCompare.getBenchmarkPatternInfo()
     fig.canvas.set_window_title(frameTitle)
     # Shrink current axis by 20%
@@ -229,8 +227,8 @@ def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, l
 # TODO end to remove
 
 # TODO to remove
-    if (legendExtra == 'Iterations'):
-        return
+#    if (legendExtra == 'Iterations'):
+#        return
 # TODO end to remove
 
 # TODO to remove
@@ -245,7 +243,7 @@ def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, l
     """
 # TODO end to remove
 
-    pt = find (legendExtra, POINT_TYPE_CORRESPONDENCE)
+    pt = findStartWith (legendExtra, POINT_TYPE_CORRESPONDENCE)
     if (pt < 0):
         pointType = POINT_TYPE_LIST[pointType]
     else:
@@ -264,10 +262,8 @@ def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, l
     ax.plot(X, Z, "-"+pointType, color=col, label=legend, markersize =7)
 
     if (Z_error != None):
-        alpha_fill= 0.1
-        col = generateMappedRandomColor()
-        if (legendExtra == 'Compute time'):
-            ax.fill_between(X, Z_error[1], Z_error[0], color=col, alpha=alpha_fill)
+#        if (legendExtra == 'Compute time'):
+        ax.fill_between(X, Z_error[1], Z_error[0], color=col, alpha=0.1)
 
     ax.set_ylabel(Z_label)
     ax.set_xlabel(X_label)
@@ -300,53 +296,45 @@ def plotBar(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, log
 # ---------------------------------------
 # Plotting methods (loop on all data)
 # ---------------------------------------
-def plotData_projection(data, plotType, dimProjectionName, dimProjectionListValue, logX, logY, allProjectionIn1Frame, resultDimText, multipleTry, dataCompare=None):
-    pointType   =0
+def plotData_projection(dataLis, plotType, dimProjectionName, dimProjectionListValue, logX, logY, allProjectionIn1Frame, resultDimText, multipleTry):
+    pointType   = 0
     if (allProjectionIn1Frame):
         fig     = plt.figure()
         ax      = fig.gca()
     for dimProjectionValue in dimProjectionListValue:
-        (X_list, Z_list, Z_error_list, X_label_list) = data.getVariableDimVect_projection(dimProjectionName, dimProjectionValue)
-        assert(len(X_list) == len(X_label_list))
-        if (dataCompare != None):
-            (X_list_cmp, Z_list_cmp, Z_error_list_cmp, X_label_list_cmp) = dataCompare.getVariableDimVect_projection(dimProjectionName, dimProjectionValue)
-            assert(len(X_list_cmp) == len(X_label_list_cmp))
-            assert(X_label_list == X_label_list_cmp)
-#TODO            shift = float(min((X_list_cmp[0][1] - X_list_cmp[0][0]), (X_list[0][1] - X_list[0][0])))/3
         transparency=1.
         if (allProjectionIn1Frame):
             resultName  = dimProjectionName + "(" + str(dimProjectionValue) + ")"
         if (not allProjectionIn1Frame):
             fig = plt.figure()
             ax  = fig.gca()
-        for resultId in xrange(data.getNbResultDim()):
+        for resultId in xrange(dataLis[0].getNbResultDim()):
             if (not allProjectionIn1Frame):
-                resultName  = data.getResultDimName(resultId)
-            Z           = Z_list[resultId]
-            Z_error     = Z_error_list[resultId]
+                resultName  = dataLis[0].getResultDimName(resultId)
+            
             if (plotType == PLOT_TYPE_BAR):
-                plotBar(X_list[0], Z, Z_error, fig, ax, X_label_list[0], resultDimText, data.getBenchmarkPatternInfo(), BAR_SIZE, logX, logY, legendExtra=resultName, transparency=transparency, generateRandomColor=allProjectionIn1Frame)
-                if (dataCompare != None):
-                    Z_cmp       = Z_list_cmp[resultId]
-                    Z_cmp_error = Z_error_list_cmp[resultId]
-#                    plotBar([x + shift for x in X_list_cmp[0]], Z_cmp, Z_cmp_error, fig, ax, X_label_list_cmp[0], resultDimText, dataCompare.getBenchmarkPatternInfo(), BAR_SIZE, logX, logY, legendExtra=resultName, transparency=transparency, generateRandomColor=allProjectionIn1Frame)
-                    plotBar([x for x in X_list_cmp[0]], Z_cmp, Z_cmp_error, fig, ax, X_label_list_cmp[0], resultDimText, dataCompare.getBenchmarkPatternInfo(), BAR_SIZE, logX, logY, legendExtra=resultName, transparency=transparency, generateRandomColor=allProjectionIn1Frame)
+                for data in dataLis:
+                    (X_list, Z_list, Z_error_list, X_label_list) = data.getVariableDimVect_projection(dimProjectionName, dimProjectionValue)
+                    assert(len(X_list) == len(X_label_list))
+                    Z           = Z_list[resultId]
+                    Z_error     = Z_error_list[resultId]
+                    plotBar(X_list[0], Z, Z_error, fig, ax, X_label_list[0], resultDimText, data.getBenchmarkPatternInfo(), BAR_SIZE, logX, logY, legendExtra=resultName, transparency=transparency, generateRandomColor=allProjectionIn1Frame)
             elif (plotType == PLOT_TYPE_POINT):
-                plotPoint(X_list[0], Z, Z_error, fig, ax, X_label_list[0], resultDimText, data.getBenchmarkPatternInfo(), BAR_SIZE, logX, logY, legendExtra=resultName, pointType=pointType, generateRandomColor=allProjectionIn1Frame)
-                pointType = (pointType + 1) % len(POINT_TYPE_LIST)
-                if (dataCompare != None):
-                    Z_cmp       = Z_list_cmp[resultId]
-                    Z_cmp_error = Z_error_list_cmp[resultId]
-                    plotPoint(X_list_cmp[0], Z_cmp, Z_cmp_error, fig, ax, X_label_list_cmp[0], resultDimText, dataCompare.getBenchmarkPatternInfo(), BAR_SIZE, logX, logY, legendExtra=resultName, pointType=pointType, generateRandomColor=allProjectionIn1Frame)
+                for data in dataLis:
+                    (X_list, Z_list, Z_error_list, X_label_list) = data.getVariableDimVect_projection(dimProjectionName, dimProjectionValue)
+                    assert(len(X_list) == len(X_label_list))
+                    Z           = Z_list[resultId]
+                    Z_error     = Z_error_list[resultId]
+                    plotPoint(X_list[0], Z, Z_error, fig, ax, X_label_list[0], resultDimText, data.getBenchmarkPatternInfo(), BAR_SIZE, logX, logY, legendExtra=resultName, pointType=pointType)#, generateRandomColor=allProjectionIn1Frame)
                     pointType = (pointType + 1) % len(POINT_TYPE_LIST)
             else:
                 loggerError("Unknown 2d plot type", param=plotType, exitNow=True)
             transparency = transparency / 2.
 
         if (not allProjectionIn1Frame):
-            projectionPlotHeader(data, dataCompare, dimProjectionName, dimProjectionValue, ax, fig)
+            projectionPlotHeader(dataLis, dimProjectionName, dimProjectionValue, ax, fig)
     if (allProjectionIn1Frame):
-        projectionPlotHeader(data, dataCompare, dimProjectionName, dimProjectionValue, ax, fig)
+        projectionPlotHeader(dataLis, dimProjectionName, dimProjectionValue, ax, fig)
 
 
 def plotData_3d(data, plotType):
@@ -368,35 +356,35 @@ def plotData_3d(data, plotType):
         plt.show(block=False)
 
 
-def plotData(data, plotType, logX, logY, allProjectionIn1Frame, resultDimText, multipleTry, dataCompare=None):
+def plotData(dataLis, plotType, logX, logY, allProjectionIn1Frame, resultDimText, multipleTry):
 #    plt.hold(True)  # Allows to add subsequent plots
-    (plotType, dimProjectionName, dimProjectionListValue) = parsePlotType(plotType, data)
+    (plotType, dimProjectionName, dimProjectionListValue) = parsePlotType(plotType, dataLis[0])
     if ((plotType == PLOT_TYPE_BAR) or (plotType == PLOT_TYPE_POINT)):
-        plotData_projection(data, plotType, dimProjectionName, dimProjectionListValue, logX, logY, allProjectionIn1Frame, resultDimText, multipleTry, dataCompare=dataCompare)
+        plotData_projection(dataLis, plotType, dimProjectionName, dimProjectionListValue, logX, logY, allProjectionIn1Frame, resultDimText, multipleTry)
     else:
 #TODO add the log scal option
-        plotData_3d(data, plotType)
+        plotData_3d(dataLis, plotType)
 
 
 # ---------------------------------------
 # Main method
 # ---------------------------------------
 if __name__ == "__main__":
-    (dataFileName, plotType, logX, logY, resultDimText, allProjectionIn1Frame, multipleTry, variableDimForSort)  = parseInputArg(sys.argv)
-    dataList = [Data() for f in dataFileName]
+    (dataFileName, plotType, logX, logY, resultDimText, allProjectionIn1Frame, allDataIn1Frame, multipleTry, variableDimForSort)  = parseInputArg(sys.argv)
+    dataLis = [Data() for f in dataFileName]
     for i in xrange(len(dataFileName)):
         print "\t Parsing the data file: " + dataFileName[i]
-        dataList[i].parseAndSet(dataFileName[i], multipleTry=multipleTry, variableDimForSort=variableDimForSort)
-#        assert (dataList[i].getNbVariableDim() == 2)
+        dataLis[i].parseAndSet(dataFileName[i], multipleTry=multipleTry, variableDimForSort=variableDimForSort)
+#        assert (dataLis[i].getNbVariableDim() == 2)
 
     nbFile = len(dataFileName)
-    if (nbFile == 1):
-        print dataList[0].toString()
-        plotData(dataList[0], plotType, logX, logY, allProjectionIn1Frame, resultDimText, multipleTry)
+    if ((nbFile == 1) or (allDataIn1Frame)):
+#        for data in dataLis:
+#            print data.toString()
+        plotData(dataLis, plotType, logX, logY, allProjectionIn1Frame, resultDimText, multipleTry)
     else:
         for i in xrange(nbFile-1):
-#            print dataList[i].toString()
             for j in range(i+1, nbFile):
-                plotData(dataList[i], plotType, logX, logY, allProjectionIn1Frame, resultDimText, multipleTry, dataCompare=dataList[j])
-#        print dataList[nbFile-1].toString()
+                dataLisBuffer = [ dataLis[i], dataLis[j] ]
+                plotData(dataLisBuffer, plotType, logX, logY, allProjectionIn1Frame, resultDimText, multipleTry)
     plt.show()

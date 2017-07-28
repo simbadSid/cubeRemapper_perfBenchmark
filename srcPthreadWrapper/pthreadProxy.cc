@@ -22,7 +22,15 @@ __inline int proxy_pthread_create(pthread_t *pt, const pthread_attr_t *pthreadAt
 	return pthread_create(pt, pthreadAttr, func, funcAttr);
 }
 
+
 __inline int proxy_pthread_setaffinity_np(pthread_t thread, size_t cpusetsize, const cpu_set_t *cpuset)
 {
 	return pthread_setaffinity_np(thread, cpusetsize, cpuset);
 }
+
+
+__inline pthread_t proxy_pthread_self()
+{
+	return pthread_self();
+}
+
