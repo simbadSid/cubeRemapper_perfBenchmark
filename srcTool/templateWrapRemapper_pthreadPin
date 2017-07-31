@@ -10,7 +10,7 @@
 
 
 
-if [ $REMAPPER_BIN_TARGET == "" ] || [ $LIB_PTHREAD_WRAPPER == "" ]
+if [ "$REMAPPER_BIN_TARGET" == "" ] || [ $LIB_PTHREAD_WRAPPER == "" ]
 then
 	echo "+++++++++++++++++++++++++++++++++++++++++++++++"
 	echo "The current script has not correctly been initialized from the template"
@@ -21,7 +21,7 @@ then
 	exit
 fi
 
-if [ $PTHREAD_WRAPPER_CORE_SHIFT == "" ] #|| [ $PTHREAD_WRAPPER_CORE_SHIFT != ~ ^[0-9]+$ ]
+if [ "$PTHREAD_WRAPPER_CORE_SHIFT" == "" ] #|| [ "$PTHREAD_WRAPPER_CORE_SHIFT" != ~ ^[0-9]+$ ]
 then
 	echo "+++++++++++++++++++++++++++++++++++++++++++++++"
 	echo "%(0) requires the environment variable PTHREAD_WRAPPER_CORE_SHIFT to be set to an int in [1, NB_CORES]"

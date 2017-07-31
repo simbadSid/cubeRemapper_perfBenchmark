@@ -46,8 +46,7 @@ PATH_CUBE_RAMAPPER_BIN					=_build/_install/bin/cube_remap2
 NB_CORES								=48
 NB_CORES_COMPILE						=22
 CUBE_INPUT_SIZE							=128
-CUBE_INPUT_SIZE0						=0$(CUBE_INPUT_SIZE)
-CUBE_INPUT_FILE							=../remapperInputDataFile/work/jzam11/jzam1166/measuruments/NPB/NPB3.3-MZ-MPI_scorep-1.2/measurements/E/$(CUBE_INPUT_SIZE0)/scorep_sp-mz_E_$(CUBE_INPUT_SIZE)x64_sum_filt/profile.cubex 
+CUBE_INPUT_FILE							=resource/cubeInput/$(CUBE_INPUT_SIZE)_sum_filt_profile.cubex 
 
 
 ## -------------------------------

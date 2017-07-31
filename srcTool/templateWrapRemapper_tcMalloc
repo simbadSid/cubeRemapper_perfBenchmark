@@ -7,7 +7,7 @@
 
 
 
-if [ $LIB_TCMALLOC == "" ]
+if [ "$LIB_TCMALLOC" == "" ]
 then
 	echo "+++++++++++++++++++++++++++++++++++++++++++++++"
 	echo "The TcMalloc library can not be found"
@@ -17,7 +17,7 @@ then
 fi
 
 
-if [ $REMAPPER_BIN_TARGET == "" ]
+if [ "$REMAPPER_BIN_TARGET" == "" ]
 then
 	echo "+++++++++++++++++++++++++++++++++++++++++++++++"
 	echo "The current script has not correctly been initialized from the template"
