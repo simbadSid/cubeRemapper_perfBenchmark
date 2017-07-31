@@ -17,7 +17,8 @@
 import matplotlib as mpl
 font = {'family' : 'normal',
         'weight' : 'normal',
-        'size'   : 27}
+#        'size'   : 27}
+        'size'   : 17}
 mpl.rc('font', **font)
 PLOT_LIB_LIST = ['TkAgg', 'GtkAgg', 'Agg']
 for lib in PLOT_LIB_LIST:
@@ -66,7 +67,7 @@ PLOT_TYPE_BAR                       = "bar"
 PLOT_TYPE_POINT                     = "point"
 
 COLOR_DEFAULT                       = 'magenta'
-COLOR_LIST                          = ['green',                'black',                    'red',                               'purple',                               'blue',                                     'black',        'red',                      'blue',          'red',                     'green',                    'purple',                             'silver']
+COLOR_LIST                          = ['green',                'black',                    'red',                               'purple',                               'blue',                                     'red',          'green',                    'blue',          'green',                  'red',                    'purple',                             'silver']
 COLOR_CORRESPONDENCE                = ['./posixGlibcIO_sleep', './posixGlibcAIO_sleep',    './posixGlibcAIO_sleep_noSignal',    './posixGlibcIO_sleep_memoryFootprint', './posixGlibcAIO_sleep_memoryFootprint',    'DEV-SL-trunk', 'DEV-SL-trunk-tcmalloc',    'DEV-SL-AIO',   'DEV-SL-AIO-pinnedThread', 'DEV-SL-AIO-noFalseSharing','DEV-SL-AIO-noFalseSharing-tcmallocs', 'DEV-SL-AIO-pthreadWrap']
 
 POINT_TYPE_LIST                     = ['p',     'x',        'o',                    '<',                        '^',                     '*', 'D', 'x', '|', 'H']
