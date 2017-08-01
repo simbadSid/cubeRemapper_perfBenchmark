@@ -9,7 +9,7 @@
 <!-- 
 		<parameter	name="branch">								DEV-SL-AIO, DEV-SL-trunk, DEV-SL-AIO-pinThread, DEV-SL-AIO-noFalseSharing, DEV-SL-AIO-noFalseSharing-customAlloc	</parameter>
 -->
-		<parameter	name="branch">								DEV-SL-trunk, DEV-SL-trunk-tcmalloc, DEV-SL-AIO-noFalseSharing-tcmalloc	</parameter>
+		<parameter	name="branch">								DEV-SL-trunk, DEV-SL-AIO, DEV-SL-AIO-pthreadWrap, DEV-SL-AIO-noFalseSharing, DEV-SL-AIO-noFalseSharing-tcmalloc	</parameter>
 		<parameter	name="fileExec">							cube_remap2											</parameter>
 		<parameter	name="filePathStatistic">					resource/statistic/									</parameter>
 		<parameter	name="filePathExec">						../${branch}/_build/_install/bin/					</parameter>
@@ -18,7 +18,7 @@
 		<parameter	name="cubeDumpResFile">						resource/tmpCubeDumpFile							</parameter>
 		<parameter	name="fileScriptParseCubeDumpRes">			srcPlot/mainParseCubeDumpResFile.py					</parameter>
 		<parameter	name="nbProcessor">							2													</parameter>
-		<parameter	name="nbTry">								5													</parameter>
+		<parameter	name="nbTry">								2													</parameter>
 	</parameterset>
 
 	<parameterset	name="parameterMeasuredDim">

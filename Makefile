@@ -345,7 +345,7 @@ pthreadWrapper.so_all:
 #-----------------------------------------------------------------------------------------------------------
 #---------------------------------------- Experimentation Methodes -----------------------------------------
 #-----------------------------------------------------------------------------------------------------------
-runAllBenchmark:	compileTrunkScorep compileTrunkTcmallocScorep compileAioNoFalseSharingTcmallocScorep compileAioScorep compileAioNoFalseSharingScorep  
+runAllBenchmark:	compileTrunkScorep compileAioScorep compileAioPthreadWrap compileAioNoFalseSharingScorep compileAioNoFalseSharingTcmallocScorep  
 			jube run benchmarkInstrumentation.xml --only-bench init_outputFile; \
 			jube run benchmarkInstrumentation.xml --only-bench run_benchmark;
 
