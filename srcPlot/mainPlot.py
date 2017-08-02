@@ -239,10 +239,10 @@ def plotSurface(X, Y, Z, fig, X_label, Y_label, Z_label):
 
 
 def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, logY, legendExtra="", pointType=0, generateRandomColor=False):
-    if (not legendExtra.startswith("Total")):
-        return
-    if ((legend != 'DEV-SL-trunk')   and (legend != 'DEV-SL-AIO') and (legend != 'DEV-SL-AIO-noFalseSharing') and (legend != 'DEV-SL-AIO-noFalseSharing-tcmalloc')):
-        return
+#    if (not legendExtra.startswith("Total")):
+#        return
+#    if ((legend != 'DEV-SL-trunk')   and (legend != 'DEV-SL-AIO') and (legend != 'DEV-SL-AIO-noFalseSharing') and (legend != 'DEV-SL-AIO-noFalseSharing-tcmalloc')):
+#        return
 
 # TODO to remove
 #    if (legend.startswith("./posixGlibcIO") and legendExtra != "computeTime(0.0001)"):
