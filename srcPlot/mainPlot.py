@@ -201,7 +201,7 @@ def projectionPlotHeader(dataLis, dimProjectionName, dimProjectionValue, ax, fig
 #    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 #    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.06),fancybox=True, shadow=True, ncol=3)
     plt.grid()
-    plt.legend(loc=2)  # Put the legend on the left
+    plt.legend(bbox_to_anchor=(0, 1.3), loc='upper left')  # Put the legend on the left
     plt.show(block=False)
 
 
@@ -241,8 +241,8 @@ def plotSurface(X, Y, Z, fig, X_label, Y_label, Z_label):
 def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, logY, legendExtra="", pointType=0, generateRandomColor=False):
 #    if (not legendExtra.startswith("Total")):
 #        return
-#    if ((legend != 'DEV-SL-trunk')   and (legend != 'DEV-SL-AIO') and (legend != 'DEV-SL-AIO-noFalseSharing') and (legend != 'DEV-SL-AIO-noFalseSharing-tcmalloc')):
-#        return
+    if ((legend != 'DEV-SL-trunk')):#   and (legend != 'DEV-SL-AIO') and (legend != 'DEV-SL-AIO-noFalseSharing') and (legend != 'DEV-SL-AIO-noFalseSharing-tcmalloc')):
+        return
 
 # TODO to remove
 #    if (legend.startswith("./posixGlibcIO") and legendExtra != "computeTime(0.0001)"):
@@ -284,10 +284,13 @@ def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, l
     legend = fencyLabel(legend)
 #    legendExtra='Total time'
     legend = legend + " (" + legendExtra + ")"
-    ax.plot(X, Z, "-"+pointType, color=col, label=legend, markersize =7)
+    ax.plot(X, Z, "-"+pointType, color=col, label=legend, markersize =10)
 
     if (Z_error != None):
-	ax.fill_between(X, Z_error[1], Z_error[0], color=col, alpha=0.1)
+#        ax.fill_between(X, Z_error[1], Z_error[0], color=col, alpha=0.1)
+        Z_error_max = [(Z_error[0][i] - Z[i]) for i in xrange(len(Z))]
+        Z_error_min = [(Z[i] - Z_error[1][i]) for i in xrange(len(Z))]
+        ax.errorbar(X, Z, yerr=[Z_error_max, Z_error_min], color=col)
 
     Z_label = fencyLabel(Z_label)
     X_label = fencyLabel(X_label)
