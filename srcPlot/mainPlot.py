@@ -73,7 +73,7 @@ COLOR_CORRESPONDENCE                = ['./posixGlibcIO_sleep', './posixGlibcAIO_
 POINT_TYPE_LIST                     = ['p',     'x',        'o',                    '<',                        '^',                     '*', 'D', 'x', '|', 'H']
 POINT_TYPE_CORRESPONDENCE           = ['Total', 'Compute',  'Compute is row wise',  'Compute[get_sevs_raw]',    'Compute[set_sevs_raw]', 'Write']
 
-LABEL_LIST_FENCY                    = ["File size (Bytes)", "Time (s)",  "#L1 (total) cache miss",  "#L2 (total) cache miss","#L3 (total) cache miss","State-of-the-art", "Asynchronous I/O - naive", "Asynchronous I/O - pinned thread", "Asynchronous I/O - pinned thread", "Asynchronous I/O - no \"false sharing\"",  "Asynchronous I/O - no \"false sharing\" + custom \"Mem Alloc\"",  "Asynchronous I/O - no \"false sharing\" + custom \"Mem Alloc\""]
+LABEL_LIST_FENCY                    = ["File size (Bytes)", "Time (s)",  "#L1 (total) cache miss",  "#L2 (total) cache miss","#L3 (total) cache miss","Trunk", "Asynchronous I/O - naive", "Asynchronous I/O - pinned thread", "Asynchronous I/O - pinned thread", "Asynchronous I/O - no \"false sharing\"",  "Asynchronous I/O - no \"false sharing\" + custom \"Mem Alloc\"",  "Asynchronous I/O - no \"false sharing\" + custom \"Mem Alloc\""]
 LABEL_LIST_FENCY_CORRESPONDANCE     = ["fileSize",          "time",      "PAPI_L1_TCM",             "PAPI_L2_TCM",           "PAPI_L3_TCM",           "DEV-SL-trunk",     "DEV-SL-AIO",               "DEV-SL-AIO-pinnedThread",          "DEV-SL-AIO-pthreadWrap",           "DEV-SL-AIO-noFalseSharing",                "DEV-SL-AIO-noFalseSharing-customAlloc",                           "DEV-SL-AIO-noFalseSharing-tcmalloc"]
 
 
@@ -200,8 +200,8 @@ def projectionPlotHeader(dataLis, dimProjectionName, dimProjectionValue, ax, fig
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 #    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 #    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.06),fancybox=True, shadow=True, ncol=3)
-    plt.grid()
-    plt.legend(bbox_to_anchor=(0, 1.3), loc='upper left')  # Put the legend on the left
+#    plt.grid()
+    plt.legend(bbox_to_anchor=(0.02, 1.2), loc='upper left')  # Put the legend on the left
     plt.show(block=False)
 
 
@@ -239,9 +239,9 @@ def plotSurface(X, Y, Z, fig, X_label, Y_label, Z_label):
 
 
 def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, logY, legendExtra="", pointType=0, generateRandomColor=False):
-#    if (not legendExtra.startswith("Total")):
-#        return
-    if ((legend != 'DEV-SL-trunk')):#   and (legend != 'DEV-SL-AIO') and (legend != 'DEV-SL-AIO-noFalseSharing') and (legend != 'DEV-SL-AIO-noFalseSharing-tcmalloc')):
+    if (not legendExtra.startswith("Total")):
+        return
+    if ((legend != 'DEV-SL-trunk') and (legend != 'DEV-SL-AIO') and (legend != 'DEV-SL-AIO-noFalseSharing')):# and (legend != 'DEV-SL-AIO-noFalseSharing-tcmalloc')): #and (legend != 'DEV-SL-AIO-pthreadWrap')):
         return
 
 # TODO to remove
@@ -282,7 +282,8 @@ def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, l
             col = COLOR_LIST[col]
 
     legend = fencyLabel(legend)
-#    legendExtra='Total time'
+#    legendExtra='Compute time'
+    legendExtra='Total time'
     legend = legend + " (" + legendExtra + ")"
     ax.plot(X, Z, "-"+pointType, color=col, label=legend, markersize =10)
 
@@ -290,7 +291,7 @@ def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, l
 #        ax.fill_between(X, Z_error[1], Z_error[0], color=col, alpha=0.1)
         Z_error_max = [(Z_error[0][i] - Z[i]) for i in xrange(len(Z))]
         Z_error_min = [(Z[i] - Z_error[1][i]) for i in xrange(len(Z))]
-        ax.errorbar(X, Z, yerr=[Z_error_max, Z_error_min], color=col)
+        ax.errorbar(X, Z, yerr=[Z_error_min, Z_error_max], color=col)
 
     Z_label = fencyLabel(Z_label)
     X_label = fencyLabel(X_label)
