@@ -20,6 +20,13 @@ font = {'family' : 'normal',
 #        'size'   : 27}
         'size'   : 33}
 mpl.rc('font', **font)
+mpl.rcParams['axes.linewidth'] = 5
+mpl.rcParams['patch.linewidth'] = 5
+
+
+
+
+
 PLOT_LIB_LIST = ['TkAgg', 'GtkAgg', 'Agg']
 for lib in PLOT_LIB_LIST:
     try:
@@ -73,12 +80,14 @@ COLOR_CORRESPONDENCE                = ['./posixGlibcIO_sleep', './posixGlibcAIO_
 POINT_TYPE_LIST                     = ['p',     'x',        'o',                    '<',                        '^',                     '*', 'D', 'x', '|', 'H']
 POINT_TYPE_CORRESPONDENCE           = ['Total', 'Compute',  'Compute is row wise',  'Compute[get_sevs_raw]',    'Compute[set_sevs_raw]', 'Write']
 
-LABEL_LIST_FENCY                    = ["File size (Bytes)", "Time (s)",  "#L1 (total) cache miss",  "#L2 (total) cache miss","#L3 (total) cache miss","Trunk", "Asynchronous I/O - naive", "Asynchronous I/O - pinned thread", "Asynchronous I/O - pinned thread", "Asynchronous I/O - no \"false sharing\"",  "Asynchronous I/O - no \"false sharing\" + custom \"Mem Alloc\"",  "Asynchronous I/O - no \"false sharing\" + custom \"Mem Alloc\""]
-LABEL_LIST_FENCY_CORRESPONDANCE     = ["fileSize",          "time",      "PAPI_L1_TCM",             "PAPI_L2_TCM",           "PAPI_L3_TCM",           "DEV-SL-trunk",     "DEV-SL-AIO",               "DEV-SL-AIO-pinnedThread",          "DEV-SL-AIO-pthreadWrap",           "DEV-SL-AIO-noFalseSharing",                "DEV-SL-AIO-noFalseSharing-customAlloc",                           "DEV-SL-AIO-noFalseSharing-tcmalloc"]
+LABEL_LIST_FENCY                    = ["File size (Bytes)", "Time (s)",  "#L1 (total) cache miss",  "#L2 (total) cache miss","#L3 (total) cache miss","Compute L3 miss",    "Trunk",        "Asynchronous I/O - naive", "Asynchronous I/O - pinned thread", "Asynchronous I/O - pinned thread", "Asynchronous I/O - no \"false sharing\"",  "Asynchronous I/O - no \"false sharing\" + custom \"Mem Alloc\"",  "Asynchronous I/O - no \"false sharing\" + custom \"Mem Alloc\""]
+LABEL_LIST_FENCY_CORRESPONDANCE     = ["fileSize",          "time",      "PAPI_L1_TCM",             "PAPI_L2_TCM",           "PAPI_L3_TCM",           "Compute PAPI_L3_TCM","DEV-SL-trunk", "DEV-SL-AIO",               "DEV-SL-AIO-pinnedThread",          "DEV-SL-AIO-pthreadWrap",           "DEV-SL-AIO-noFalseSharing",                "DEV-SL-AIO-noFalseSharing-customAlloc",                           "DEV-SL-AIO-noFalseSharing-tcmalloc"]
 
 
 RESULT_DIM_TEXT_DEFAULT             = "Time (s)"
 BAR_SIZE                            = 3
+LINE_WIDTH                          = 4
+MARKER_SIZE                         = 23
 
 
 # ---------------------------------------
@@ -167,28 +176,7 @@ def parsePlotType(plotType, data):
     return (plotTypeId, dimProjectionName, dimProjectionListValue)
 
 
-def plotModel(ax):
-    writeTime   = 1.45
-    n           = 4
-    maxC        = 7
-    ax.plot([0,         writeTime], [n*writeTime, n*writeTime],     "--", color='cyan', label="Theoretical model (C << W)")
-    ax.plot([writeTime, maxC],      [n*writeTime, n*maxC],           "--", color='blue', label="Theoretical model (C >> W)")
-
-
-def plotModel_hpc(ax, nbIoDevice=1):
-    writeTime   = 0.57
-    n           = 40
-    maxC        = 5
-    ax.plot([0,                     writeTime/nbIoDevice],  [(n-1)*writeTime/nbIoDevice + writeTime,    n*writeTime/nbIoDevice+writeTime],  "--", color='cyan',  label="Theoretical model (C << W)")
-    ax.plot([writeTime/nbIoDevice,  maxC],                  [n*writeTime/nbIoDevice + writeTime,        n*maxC+writeTime],                  "--", color='blue',  label="Theoretical model (C >> W)") 
-    ax.plot([writeTime/nbIoDevice,  writeTime/nbIoDevice],  [0,                                         200],                               "--", color='purple',label="Write time / nb IO devices") 
-
-
 def projectionPlotHeader(dataLis, dimProjectionName, dimProjectionValue, ax, fig):
-# TODO Plot the model
-#    plotModel(ax)
-#    plotModel_hpc(ax, nbIoDevice=dimProjectionValue)
-# TODO END
     plt.legend()
     frameTitle = dataLis[0].getBenchmarkPatternInfo()
     for dataCompare in dataLis[1:]:
@@ -201,7 +189,7 @@ def projectionPlotHeader(dataLis, dimProjectionName, dimProjectionValue, ax, fig
 #    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 #    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.06),fancybox=True, shadow=True, ncol=3)
 #    plt.grid()
-    plt.legend(bbox_to_anchor=(0.02, 1.2), loc='upper left')  # Put the legend on the left
+    plt.legend(bbox_to_anchor=(0.02, 1.1), loc='upper left')  # Put the legend on the left
     plt.show(block=False)
 
 
@@ -241,7 +229,7 @@ def plotSurface(X, Y, Z, fig, X_label, Y_label, Z_label):
 def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, logY, legendExtra="", pointType=0, generateRandomColor=False):
     if (not legendExtra.startswith("Total")):
         return
-    if ((legend != 'DEV-SL-trunk') and (legend != 'DEV-SL-AIO') and (legend != 'DEV-SL-AIO-noFalseSharing')):# and (legend != 'DEV-SL-AIO-noFalseSharing-tcmalloc')): #and (legend != 'DEV-SL-AIO-pthreadWrap')):
+    if ((legend != 'DEV-SL-trunk') and (legend != 'DEV-SL-AIO') and (legend != 'DEV-SL-AIO-noFalseSharing') and (legend != 'DEV-SL-AIO-noFalseSharing-tcmalloc')): #and (legend != 'DEV-SL-AIO-pthreadWrap')):
         return
 
 # TODO to remove
@@ -281,17 +269,19 @@ def plotPoint(X, Z, Z_error, fig, ax, X_label, Z_label, legend, barSize, logX, l
         else:
             col = COLOR_LIST[col]
 
-    legend = fencyLabel(legend)
+    legend      = fencyLabel(legend)
+    legendExtra = fencyLabel(legendExtra)
 #    legendExtra='Compute time'
-    legendExtra='Total time'
+#    legendExtra='Total time'
     legend = legend + " (" + legendExtra + ")"
-    ax.plot(X, Z, "-"+pointType, color=col, label=legend, markersize =10)
+    ax.plot(X, Z, "-"+pointType, color=col, label=legend, linewidth=LINE_WIDTH, markersize=MARKER_SIZE)
+#    ax.plot([800000000], [-0.25], color='white')
 
     if (Z_error != None):
 #        ax.fill_between(X, Z_error[1], Z_error[0], color=col, alpha=0.1)
         Z_error_max = [(Z_error[0][i] - Z[i]) for i in xrange(len(Z))]
         Z_error_min = [(Z[i] - Z_error[1][i]) for i in xrange(len(Z))]
-        ax.errorbar(X, Z, yerr=[Z_error_min, Z_error_max], color=col)
+        ax.errorbar(X, Z, yerr=[Z_error_min, Z_error_max], color=col, linewidth=LINE_WIDTH)
 
     Z_label = fencyLabel(Z_label)
     X_label = fencyLabel(X_label)
